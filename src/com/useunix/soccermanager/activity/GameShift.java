@@ -110,7 +110,7 @@ public class GameShift extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putLong(CURRENT_SHIFT_ID_KEY, currentShift);
 		outState.putLong(CURRENT_VIEW_SHIFT_ID_KEY, currentlyViewingShift);
-		outState.putSerializable(SHIFT_MANAGER_KEY, shiftManager);
+		outState.putParcelable(SHIFT_MANAGER_KEY, shiftManager);
 		super.onSaveInstanceState(outState);
 	}
 

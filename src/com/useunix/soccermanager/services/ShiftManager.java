@@ -1,21 +1,19 @@
 package com.useunix.soccermanager.services;
 
-import java.io.IOException;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.useunix.soccermanager.domain.Player;
 import com.useunix.soccermanager.domain.PlayerMetric;
 import com.useunix.soccermanager.domain.PlayerMetricSummary;
 import com.useunix.soccermanager.domain.Position;
 
-public class ShiftManager implements Serializable {
-	private static final long serialVersionUID = 1402925801457915544L;
-
+public class ShiftManager implements Parcelable {
 	List<Player> allPlayers;
 	HashMap<Long, List<PlayerMetric>> shifts;
 	HashMap<Player, PlayerMetricSummary> playerStats;
@@ -187,6 +185,16 @@ public class ShiftManager implements Serializable {
 
 	public void setAllPlayers(List<Player> allPlayers) {
 		this.allPlayers = allPlayers;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		//int x = 1;
 	}
 
 }
