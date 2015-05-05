@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView android:id="@+id/play_game_header_text"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#666666"
+	    android:textColor="#FFFFFF"/>
+<TextView android:id="@+id/android:empty"
+       	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/no_players_found"/>
+<ListView android:id="@+id/android:list"
+    	android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"/>
+<Button android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seeFirstShift"
+        android:text="@string/seeFirstShift"/>
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Soccer Manager!</string>
+    <string name="app_name">Soccer Manager</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="id_label">ID</string>
+    <string name="save">Save</string>
+    <string name="no_players_found">No players found.  Click the menu button to add a new player.</string>
+    <string name="view_player_list">View players</string>
+    <string name="create_player">Create new player</string>
+    <string name="delete_player" formatted="false">Delete #%d, %s?</string>
+    <string name="play_game_header">Game on %1$tb %1$te, %1$tY.</string>
+    <string name="player_list">Player list</string>
+    <string name="play_game">Start game</string>
+    <string name="digital_clock_text">Current time</string>
+    <string name="shift_pause_text">Pause current shift</string>
+    <string name="shift_start_new_text">Start new shift</string>
+    <string name="seeFirstShift">See first shift</string>
+    <string name="seePreviousShift">Previous shift</string>
+    <string name="seeCurrentShift">Current shift</string>
+    <string name="seeNextShift">Next shift</string>
+    <string name="startShiftTimerButtonText">Start timer</string>
+    <string name="debug_settings">Debug settings</string>
+    <string name="debug_text">Debug app</string>
+    <string name="shift_length_seconds">Length of each shift in seconds</string>
+    <string name="shift_length_default">300</string>
+    <string name="settings_text">Settings</string>
+    
+</resources>
