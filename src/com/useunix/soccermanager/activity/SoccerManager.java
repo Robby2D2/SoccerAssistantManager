@@ -23,6 +23,7 @@ public class SoccerManager extends Activity {
     private static final int ACTIVITY_PLAY_GAME=2;
     public static final String TAG = SoccerManager.class.getSimpleName();
     public static final String INTENT_SHIFT_TIMER_ENDED = SoccerManager.class.getName() + ".INTENT_SHIFT_TIMER_ENDED";
+    public static final String CURRENT_SHIFT = SoccerManager.class.getName() + ".CURRENT_SHIFT";
 
 	private Button playerListButton;
 	private Button playGameButton;

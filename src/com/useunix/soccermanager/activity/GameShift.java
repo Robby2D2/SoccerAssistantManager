@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.*;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -214,17 +214,35 @@ public class GameShift extends Activity {
             }
          };
          countDownTimer.start();
-         
-         Intent intent = new Intent(SoccerManager.INTENT_SHIFT_TIMER_ENDED);
-//			intent.putExtra(Constants.TIMER, timer);
-			// intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-			
-         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock
-					.elapsedRealtime()
-					+ shiftLength * 1000, pendingIntent);
+		scheduleNotification("Shift #" + (currentShift + 1) + " timer", shiftLength * 1000);
 	}
 
-	
-	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void scheduleNotification(String content, int delay) {
+		Intent notificationIntent = new Intent(this, GameShift.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		notificationIntent.setAction(Long.toString(System.currentTimeMillis()));
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		Notification.Builder builder = new Notification.Builder(this);
+		builder.setContentTitle("Scheduled Notification");
+		builder.setContentText(content);
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setAutoCancel(true);
+		builder.setContentIntent(pendingIntent);
+
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.notify(0, builder.build());
+
+		Intent intent = new Intent(SoccerManager.INTENT_SHIFT_TIMER_ENDED);
+		intent.putExtra(SoccerManager.CURRENT_SHIFT, currentShift);
+		PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+		long futureInMillis = SystemClock.elapsedRealtime() + delay;
+		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, alarmIntent);
+//		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
+
+	}
+
 }
