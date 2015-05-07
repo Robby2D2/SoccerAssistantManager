@@ -34,7 +34,7 @@ public class ShiftManagerTest {
 			 ,new Player(12l, "Oscar", "Danek")
 			 ,new Player(13l, "Sonia", "Pai")
 		);
-		shiftManager = new ShiftManager(allPlayers);
+		shiftManager = new ShiftManager(new Long(1), allPlayers);
 	}
 	
 	@Test

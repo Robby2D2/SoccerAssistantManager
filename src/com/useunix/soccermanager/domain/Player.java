@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
 	private static final long serialVersionUID = 1L;
 	Long id;
+	Long teamId;
 	String firstName;
 	String lastName;
 	boolean isPresent;
@@ -12,13 +13,15 @@ public class Player implements Serializable {
 	public Player() {
 	}
 	
-	public Player(Long id, String firstName, String lastName) {
+	public Player(Long id, Long teamId, String firstName, String lastName) {
 		this.id = id;
+		this.teamId = teamId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
 	
-	public Player(String firstName, String lastName) {
+	public Player(Long teamId, String firstName, String lastName) {
+		this.teamId = teamId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
@@ -46,6 +49,14 @@ public class Player implements Serializable {
 	}
 	public void setIsPresent(boolean isPresent) {
 		this.isPresent = isPresent;
+	}
+
+	public Long getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
 	}
 
 	@Override

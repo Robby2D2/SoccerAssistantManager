@@ -26,5 +26,9 @@
     <string name="shift_length_seconds">Length of each shift in seconds</string>
     <string name="shift_length_default">300</string>
     <string name="settings_text">Settings</string>
-    
+
+    <string name="team_name">Team name</string>
+    <string name="team_name_default">Growl</string>
+
+
 </resources>

@@ -10,15 +10,18 @@ import android.database.sqlite.SQLiteDatabase;
 public class PlayerDao {
 	public static final String TABLE_NAME = "Player";
 	public static final String ID_COL = "_id";
+	public static final String TEAM_ID_COL = "team_id";
 	public static final String FIRST_NAME_COL = "firstName";
 	public static final String LAST_NAME_COL = "lastName";
 	public static final String[] ALL_COLUMNS = new String[] {
 		ID_COL,
+		TEAM_ID_COL,
 		FIRST_NAME_COL,
 		LAST_NAME_COL
 	};
 	public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +  " ("
 		+ ID_COL + " integer primary key autoincrement"
+		+ ", " + TEAM_ID_COL + " integer"
 		+ ", " + FIRST_NAME_COL + " text not null"
 		+ ", " + LAST_NAME_COL + " text"
 		+ ")";
@@ -38,6 +41,7 @@ public class PlayerDao {
 
 	public Player create(Player player) {
 		ContentValues values = new ContentValues();
+		values.put(TEAM_ID_COL, player.getTeamId());
 		values.put(FIRST_NAME_COL, player.getFirstName());
 		values.put(LAST_NAME_COL, player.getLastName());
 		long id = db.insert(TABLE_NAME, null, values);
@@ -49,6 +53,7 @@ public class PlayerDao {
         ContentValues args = new ContentValues();
         args.put(FIRST_NAME_COL, player.getFirstName());
         args.put(LAST_NAME_COL, player.getLastName());
+        args.put(TEAM_ID_COL, player.getTeamId());
 
         return db.update(TABLE_NAME, args, ID_COL + "=" + player.getId(), null) > 0;
     }
@@ -69,7 +74,7 @@ public class PlayerDao {
 	
 	public List<Player> getAttendingPlayers(Long gameId) {
 		List<Player> list = new ArrayList<Player>();
-		Cursor cursor = db.rawQuery(SQL_GET_ALL_ATTENDING_PLAYERS, new String[]{ String.valueOf(gameId) });
+		Cursor cursor = db.rawQuery(SQL_GET_ALL_ATTENDING_PLAYERS, new String[]{String.valueOf(gameId)});
 		if (cursor.moveToFirst()) {
 			do {
 				list.add(getPlayer(cursor));
@@ -84,15 +89,23 @@ public class PlayerDao {
 	public Player getPlayer(Cursor cursor) {
 		Player player = new Player(
 			cursor.getLong(cursor.getColumnIndexOrThrow(ID_COL)),
+			cursor.getLong(cursor.getColumnIndexOrThrow(TEAM_ID_COL)),
 			cursor.getString(cursor.getColumnIndexOrThrow(FIRST_NAME_COL)),
 			cursor.getString(cursor.getColumnIndexOrThrow(LAST_NAME_COL))
 		);
 		return player;
 	}
 
+	public Cursor getAllCursor(Long teamId) {
+		Cursor cursor = db.query(TABLE_NAME, ALL_COLUMNS,
+				TEAM_ID_COL + "=" + teamId, null, null, null,
+				LAST_NAME_COL + " asc, " + FIRST_NAME_COL + " asc");
+		return cursor;
+	}
+
 	public Cursor getAllCursor() {
 		Cursor cursor = db.query(TABLE_NAME, ALL_COLUMNS,
-				null, null, null, null, 
+				null, null, null, null,
 				LAST_NAME_COL + " asc, " + FIRST_NAME_COL + " asc");
 		return cursor;
 	}

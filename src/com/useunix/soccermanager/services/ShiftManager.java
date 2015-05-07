@@ -20,13 +20,15 @@ public class ShiftManager implements Parcelable {
 	HashMap<Long, Date> shiftStartTimes;
 	HashMap<Player, PlayerMetricSummary> playerStats;
 	private SecureRandom secureRandom;
+	Long gameId;
 
 	public ShiftManager() {
-		this(null);
+		this(new Long(1), null);
 	}
 
-	public ShiftManager(List<Player> allPlayers) {
+	public ShiftManager(Long gameId, List<Player> allPlayers) {
 		super();
+		this.gameId = gameId;
 		this.allPlayers = allPlayers;
 		secureRandom = new SecureRandom();
 	}

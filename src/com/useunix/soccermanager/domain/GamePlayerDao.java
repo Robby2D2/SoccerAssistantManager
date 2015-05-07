@@ -76,7 +76,11 @@ public class GamePlayerDao {
 	public boolean delete(Long gameId, Long playerId) {
         return db.delete(TABLE_NAME, GAME_ID_COL + "= ? AND " + PLAYER_ID_COL + " = ?",  new String[]{gameId.toString()}) > 0;
     }
-	
+
+	public boolean deleteAll(Long gameId) {
+		return db.delete(TABLE_NAME, GAME_ID_COL + "= ?",  new String[]{gameId.toString()}) > 0;
+	}
+
 	public void savePlayers(List<Player> players) {
 		
 	}

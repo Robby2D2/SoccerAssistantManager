@@ -1,9 +1,9 @@
 package com.useunix.soccermanager.activity;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import com.useunix.soccermanager.R;
-import com.useunix.soccermanager.domain.Player;
-import com.useunix.soccermanager.domain.PlayerDao;
-import com.useunix.soccermanager.domain.SoccerManagerDataHelper;
+import com.useunix.soccermanager.domain.*;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -19,12 +19,21 @@ public class PlayerEdit extends Activity {
     private Long id;
     private SoccerManagerDataHelper soccerManagerDataHelper;
     private PlayerDao playerDao;
+    private TeamDao teamDao;
+    private Team team;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         soccerManagerDataHelper = new SoccerManagerDataHelper(this);
         playerDao = new PlayerDao(soccerManagerDataHelper.getWritableDatabase());
+        teamDao = new TeamDao(soccerManagerDataHelper.getWritableDatabase());
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String teamNameKey = getString(R.string.team_name_key);
+        String teamName = sharedPreferences.getString(teamNameKey, "Growl");
+        team = teamDao.findTeamByName(teamName);
+
         setContentView(R.layout.player_edit);
         
        
@@ -85,7 +94,7 @@ public class PlayerEdit extends Activity {
         String lastName = lastNameText.getText().toString();
 
         if (id == null) {
-            long newId = playerDao.create(new Player(firstName, lastName)).getId();
+            long newId = playerDao.create(new Player(team.getId(), firstName, lastName)).getId();
             if (newId > 0) {
                 id = newId;
             }

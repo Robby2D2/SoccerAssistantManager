@@ -95,7 +95,7 @@ public class GameShift extends Activity {
 
 		if (shiftManager == null) {
 			List<Player> attendingPlayers = playerDao.getAttendingPlayers(gameId);
-			shiftManager = new ShiftManager(attendingPlayers);
+			shiftManager = new ShiftManager(gameId, attendingPlayers);
 		}
 		
         if (currentShift == null) {
@@ -220,6 +220,7 @@ public class GameShift extends Activity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void scheduleNotification(String content, int delay) {
 		Intent notificationIntent = new Intent(this, GameShift.class);
+		notificationIntent.putExtra("GAME_ID", gameId);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		notificationIntent.setAction(Long.toString(System.currentTimeMillis()));
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -236,6 +237,7 @@ public class GameShift extends Activity {
 
 		Intent intent = new Intent(SoccerManager.INTENT_SHIFT_TIMER_ENDED);
 		intent.putExtra(SoccerManager.CURRENT_SHIFT, currentShift);
+		intent.putExtra("GAME_ID", gameId);
 		PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 		long futureInMillis = SystemClock.elapsedRealtime() + delay;
 		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

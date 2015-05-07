@@ -56,6 +56,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		vibrator.vibrate(2000);
 
 		Intent notificationIntent = new Intent(mContext, GameShift.class);
+		notificationIntent.putExtra("GAME_ID", intent.getLongExtra("GAME_ID", 0));
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		notificationIntent.setAction(Long.toString(System.currentTimeMillis()));
 		PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
