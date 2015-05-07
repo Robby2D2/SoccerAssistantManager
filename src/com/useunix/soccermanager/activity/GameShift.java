@@ -1,6 +1,7 @@
 package com.useunix.soccermanager.activity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.TargetApi;
@@ -188,13 +189,17 @@ public class GameShift extends Activity {
 
 	private void createNewCountdownTimer() {
 		final Time time = new Time();
+		final Date date = new Date();
+
         countDownTimer = new CountDownTimer(shiftLength * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
             	time.set(millisUntilFinished);
-            	countDown.setText(time.format("%M:%S"));
+            	countDown.setText(time.format("%M:%S") + " started at " + date.toString());
             }
             public void onFinish() {
             	countDown.setText("Time's up!");
+				currentShift++;
+				updateAttendingPlayerList(currentShift);
             }
          };
          countDownTimer.start();

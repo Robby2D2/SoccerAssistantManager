@@ -41,8 +41,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 		
 		sendTimeIsOverNotification();
 
-		int numSeconds = mPrefs.getInt(mContext.getString(R.string.shift_length_key), 300);
-		
+//		String shiftLengthKey = mContext.getString(R.string.shift_length_key);
+//		String shiftLengthValue = mPrefs.getString(shiftLengthKey, String.valueOf(300));
+//		int numSeconds = Integer.valueOf(shiftLengthValue);
+
 //		if (mPrefs.getBoolean(mContext.getString(R.string.shift_length_key), false)){
 //			SharedPreferences.Editor editor = mPrefs.edit();
 //			editor.putString(Constants.PREF_TIMERS_NAMES[timer], mContext.getString(R.string.timer) + " " + timer);
@@ -54,11 +56,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 //			toast.setGravity(Gravity.TOP, 0, 0);
 //			toast.show();
 //		}
-
-		Intent mIntent = new Intent(mContext, SoccerManager.class);
-		mIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-		mContext.startActivity(mIntent);
+//
+//		Intent mIntent = new Intent(mContext, SoccerManager.class);
+//		mIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//		mContext.startActivity(mIntent);
 	}
 
 	private void sendTimeIsOverNotification() {
