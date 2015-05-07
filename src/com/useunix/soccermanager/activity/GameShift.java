@@ -1,5 +1,6 @@
 package com.useunix.soccermanager.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -167,13 +168,15 @@ public class GameShift extends Activity {
 					countDownTimer.cancel();
 				}
 				createNewCountdownTimer();
+				shiftManager.startShift(currentShift);
+				updateShiftTimerHeaderText();
 			}
 		});
 	}
 
 	private void updateAttendingPlayerList(Long shiftId) {
 		currentlyViewingShift = shiftId;
-		headerText.setText("Currently viewing shift #" + (currentlyViewingShift + 1));
+		updateShiftTimerHeaderText();
 		ArrayList<String> items = new ArrayList<String>();
 		
 		List<PlayerMetric> playersForShift = shiftManager.getPlayersForShift(shiftId);
@@ -185,16 +188,24 @@ public class GameShift extends Activity {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, items.toArray(new String[]{}));
         attendingPlayerListView.setAdapter(adapter);
 	}
-    
+
+	private void updateShiftTimerHeaderText() {
+		final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+		Date startTimeForShift = shiftManager.getStartTimeForShift(currentlyViewingShift);
+		String startTimeForShiftString = startTimeForShift == null ? "" : " started at " + sdf.format(startTimeForShift);
+
+		headerText.setText("Currently viewing shift #" + (currentlyViewingShift + 1) + startTimeForShiftString);
+	}
+
 
 	private void createNewCountdownTimer() {
 		final Time time = new Time();
-		final Date date = new Date();
 
         countDownTimer = new CountDownTimer(shiftLength * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
             	time.set(millisUntilFinished);
-            	countDown.setText(time.format("%M:%S") + " started at " + date.toString());
+            	countDown.setText(time.format("%M:%S"));
             }
             public void onFinish() {
             	countDown.setText("Time's up!");

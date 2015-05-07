@@ -2,6 +2,7 @@ package com.useunix.soccermanager.services;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import com.useunix.soccermanager.domain.Position;
 public class ShiftManager implements Parcelable {
 	List<Player> allPlayers;
 	HashMap<Long, List<PlayerMetric>> shifts;
+	HashMap<Long, Date> shiftStartTimes;
 	HashMap<Player, PlayerMetricSummary> playerStats;
 	private SecureRandom secureRandom;
 
@@ -197,4 +199,16 @@ public class ShiftManager implements Parcelable {
 		//int x = 1;
 	}
 
+	public Date getStartTimeForShift(Long shiftId) {
+		if (shiftStartTimes == null) return null;
+
+		return shiftStartTimes.get(shiftId);
+	}
+
+	public void startShift(Long shiftId) {
+		if (shiftStartTimes == null) {
+			shiftStartTimes = new HashMap<Long, Date>();
+		}
+		shiftStartTimes.put(shiftId, new Date());
+	}
 }
