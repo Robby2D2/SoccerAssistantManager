@@ -18,26 +18,35 @@
     android:textSize="35sp"
     android:id="@+id/countDown"
     />
-<LinearLayout 
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
+<LinearLayout
+        android:layout_width="fill_parent"
     android:layout_height="wrap_content">
-    
-	
-	<Button android:id="@+id/startShiftTimerButton" 
+
+	<Button android:id="@+id/startShiftTimerButton"
 		android:text="@string/startShiftTimerButtonText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 
 	<Button android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:id="@+id/pauseShift"
-	        android:text="@string/shift_pause_text"/>
+	        android:id="@+id/stopShiftButton"
+	        android:text="@string/shift_stop_text"/>
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+        <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/setAsCurrentShiftButton"
+                android:text="@string/shift_set_current_text"
+                android:layout_gravity="right"
+                />
+        </LinearLayout>
 </LinearLayout>
 
 <!--  List of players and positions -->
 
-<ListView
+    <ListView
     android:id="@+id/attendingPlayers"
     android:background="@android:color/transparent"
     android:layout_width="wrap_content"
@@ -46,7 +55,7 @@
     android:divider="@android:color/transparent"
   	android:dividerHeight="-20.0sp" />
 
-<LinearLayout 
+    <LinearLayout
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">

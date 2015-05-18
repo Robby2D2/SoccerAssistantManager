@@ -20,7 +20,9 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content" />
 
-<Button android:id="@+id/settings_button" 
+    <Button android:id="@+id/game_list_button" android:text="@string/view_game_list"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/settings_button"
 	android:text="@string/settings_text"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content" />

@@ -8,24 +8,27 @@
     <string name="save">Save</string>
     <string name="no_players_found">No players found.  Click the menu button to add a new player.</string>
     <string name="view_player_list">View players</string>
+    <string name="view_game_list">View games</string>
     <string name="create_player">Create new player</string>
     <string name="delete_player" formatted="false">Delete #%d, %s?</string>
     <string name="play_game_header">Game on %1$tb %1$te, %1$tY.</string>
     <string name="player_list">Player list</string>
-    <string name="play_game">Start game</string>
+    <string name="game_list">Game list</string>
+    <string name="play_game">Start new game</string>
     <string name="digital_clock_text">Current time</string>
-    <string name="shift_pause_text">Pause current shift</string>
-    <string name="shift_start_new_text">Start new shift</string>
+    <string name="shift_stop_text">Stop</string>
+    <string name="shift_set_current_text">Set current</string>
     <string name="seeFirstShift">See first shift</string>
     <string name="seePreviousShift">Previous shift</string>
     <string name="seeCurrentShift">Current shift</string>
     <string name="seeNextShift">Next shift</string>
-    <string name="startShiftTimerButtonText">Start timer</string>
+    <string name="startShiftTimerButtonText">Start</string>
     <string name="debug_settings">Debug settings</string>
     <string name="debug_text">Debug app</string>
     <string name="shift_length_seconds">Length of each shift in seconds</string>
     <string name="shift_length_default">300</string>
     <string name="settings_text">Settings</string>
+    <string name="shift_text">, Shift:</string>
 
     <string name="team_name">Team name</string>
     <string name="team_name_default">Growl</string>

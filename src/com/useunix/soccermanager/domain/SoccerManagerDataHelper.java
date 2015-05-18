@@ -7,8 +7,8 @@ import android.util.Log;
 
 public class SoccerManagerDataHelper extends SQLiteOpenHelper {
 
-	private static final String DATABASE_NAME = "socermanager.db";
-	private static final int DATABASE_VERSION = 7;
+	private static final String DATABASE_NAME = "soccermanager.db";
+	private static final int DATABASE_VERSION = 9;
 
 	public SoccerManagerDataHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -20,7 +20,9 @@ public class SoccerManagerDataHelper extends SQLiteOpenHelper {
         db.execSQL(GameDao.CREATE_TABLE);
         db.execSQL(TeamDao.CREATE_TABLE);
         db.execSQL(GamePlayerDao.CREATE_TABLE);
-        
+        db.execSQL(ShiftDao.CREATE_TABLE);
+        db.execSQL(PlayerShiftDao.CREATE_TABLE);
+
         TeamDao teamDao = new TeamDao(db);
 
         Long GROWL_TEAM_ID = new Long(1);
@@ -63,6 +65,8 @@ public class SoccerManagerDataHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + GameDao.TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + GamePlayerDao.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TeamDao.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ShiftDao.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PlayerShiftDao.TABLE_NAME);
         onCreate(db);
 	}
 

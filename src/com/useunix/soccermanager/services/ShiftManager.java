@@ -74,7 +74,13 @@ public class ShiftManager implements Parcelable {
 		return shiftPlayerPositions;
 	}
 
-	private void updateMetrics(Long shiftId, List<PlayerMetric> shiftPlayerPositions) {
+	public void updateMetrics(Long shiftId, List<PlayerMetric> shiftPlayerPositions) {
+		if (shifts == null) {
+			shifts = new HashMap<Long, List<PlayerMetric>>();
+		}
+		if (playerStats == null) {
+			playerStats = new HashMap<Player, PlayerMetricSummary>();
+		}
 		shifts.put(shiftId, shiftPlayerPositions);
 		for (PlayerMetric playerMetric : shiftPlayerPositions) {
 			PlayerMetricSummary playerMetricSummary = playerStats.get(playerMetric.getPlayer());
@@ -211,6 +217,16 @@ public class ShiftManager implements Parcelable {
 		if (shiftStartTimes == null) {
 			shiftStartTimes = new HashMap<Long, Date>();
 		}
-		shiftStartTimes.put(shiftId, new Date());
+		if (!shiftStartTimes.containsKey(shiftId)) {
+			shiftStartTimes.put(shiftId, new Date());
+		}
+	}
+
+	public HashMap<Long, Date> getShiftStartTimes() {
+		return shiftStartTimes;
+	}
+
+	public void setShiftStartTimes(HashMap<Long, Date> shiftStartTimes) {
+		this.shiftStartTimes = shiftStartTimes;
 	}
 }

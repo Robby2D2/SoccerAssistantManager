@@ -1,9 +1,7 @@
 package com.useunix.soccermanager.activity;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import android.annotation.TargetApi;
 import android.app.*;
@@ -23,10 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.useunix.soccermanager.R;
-import com.useunix.soccermanager.domain.Player;
-import com.useunix.soccermanager.domain.PlayerDao;
-import com.useunix.soccermanager.domain.PlayerMetric;
-import com.useunix.soccermanager.domain.SoccerManagerDataHelper;
+import com.useunix.soccermanager.domain.*;
 import com.useunix.soccermanager.services.ShiftManager;
 
 @TargetApi(3)
@@ -39,12 +34,17 @@ public class GameShift extends Activity {
 	
 	private SoccerManagerDataHelper dataHelper;
     private PlayerDao playerDao;
+    private GameDao gameDao;
+    private ShiftDao shiftDao;
+    private PlayerShiftDao playerShiftDao;
     private TextView headerText;
 	private TextView countDown;
 	private Button nextButton;
 	private Button currentButton;
 	private Button previousButton;
 	private Button startButton;
+	private Button stopShiftButton;
+	private Button setAsCurrentShiftButton;
 	private CountDownTimer countDownTimer;
 	private Long currentShift;
 	private Long currentlyViewingShift;
@@ -52,16 +52,17 @@ public class GameShift extends Activity {
 	
 	private ListView attendingPlayerListView;
 	private int shiftLength = DEFAULT_SHIFT_LENGTH;
-	private Long gameId;
+	private Game game;
 	private AlarmManager alarmManager;
-	
-    
+    private PendingIntent alarmIntent;
+
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_shift);
-        
+
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         
         headerText = (TextView) findViewById(R.id.play_game_header_text);
@@ -70,7 +71,10 @@ public class GameShift extends Activity {
         
         dataHelper = new SoccerManagerDataHelper(this);
         playerDao = new PlayerDao(dataHelper.getWritableDatabase());
-     
+        gameDao = new GameDao(dataHelper.getWritableDatabase());
+        shiftDao = new ShiftDao(dataHelper.getWritableDatabase());
+        playerShiftDao = new PlayerShiftDao(dataHelper.getWritableDatabase());
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String shiftLengthKey = getString(R.string.shift_length_key);
 		String shiftLengthValue = sharedPreferences.getString(shiftLengthKey,  String.valueOf(DEFAULT_SHIFT_LENGTH));
@@ -80,37 +84,67 @@ public class GameShift extends Activity {
         initNextButton();
         initPreviousButton();
         initStartButton();
-        
+        initStopShiftButton();
+		initSetAsCurrentShiftButton();
+
         attendingPlayerListView = (ListView)findViewById(R.id.attendingPlayers);
-        
-    	Intent intent = getIntent();
-		gameId = intent.getExtras().getLong("GAME_ID");
-		if (gameId <= 0 ) { throw new RuntimeException("Could not start shift with no game specified."); }
 
-		if (savedInstanceState != null) {
-			shiftManager = (ShiftManager) savedInstanceState.getSerializable(SHIFT_MANAGER_KEY);
-			currentShift = savedInstanceState.getLong(CURRENT_SHIFT_ID_KEY);
-			currentlyViewingShift = savedInstanceState.getLong(CURRENT_VIEW_SHIFT_ID_KEY);
-		}
-
-		if (shiftManager == null) {
-			List<Player> attendingPlayers = playerDao.getAttendingPlayers(gameId);
-			shiftManager = new ShiftManager(gameId, attendingPlayers);
-		}
+		loadFromExistingGame(getIntent().getExtras().getLong("GAME_ID"));
 		
-        if (currentShift == null) {
-        	currentShift = 0l;
+        if (game.getCurrentShiftId() == null) {
+        	game.setCurrentShiftId(0l);
         }
         if (currentlyViewingShift == null) {
-        	currentlyViewingShift = currentShift;
+        	currentlyViewingShift = getCurrentShift();
         }
         updateAttendingPlayerList(currentlyViewingShift);
     }
 
+	private void loadFromExistingGame(Long gameId) {
+		if (gameId <= 0 ) { throw new RuntimeException("Could not start shift with no game specified."); }
+
+		Game game = gameDao.getGame(gameId);
+		if (game == null) { throw new RuntimeException("Could not find game with ID : " + gameId + "."); }
+
+		this.game = game;
+		shiftManager = createShiftManager(game);
+		currentlyViewingShift = getCurrentShift();
+	}
+
+	private ShiftManager createShiftManager(Game game) {
+		List<Player> attendingPlayers = playerDao.getAttendingPlayers(game.getId());
+		shiftManager = new ShiftManager(game.getId(), attendingPlayers);
+
+		List<Shift> shiftsForGame = shiftDao.getAllForGame(game.getId());
+		HashMap<Long, Date> shiftStartTimes = new HashMap<Long, Date>();
+		for (Shift shift : shiftsForGame) {
+			List<PlayerShift> playerShifts = playerShiftDao.getAllForShift(shift.getId());
+			List<PlayerMetric> playerMetricsForShift = new ArrayList<PlayerMetric>();
+			for (PlayerShift playerShift : playerShifts) {
+				playerMetricsForShift.add(new PlayerMetric(shift.getRank(), Position.valueOf(playerShift.getPosition()), findPlayer(attendingPlayers, playerShift.getPlayerId())));
+			}
+			shiftManager.updateMetrics(shift.getRank(), playerMetricsForShift);
+			shiftStartTimes.put(shift.getRank(), shift.getStartTime());
+		}
+		shiftManager.setShiftStartTimes(shiftStartTimes);
+		return shiftManager;
+	}
+
+	// Return from current list of players or DB
+	private Player findPlayer(List<Player> players, Long playerId) {
+		for (Player player : players) {
+			if (player.getId() == playerId) {
+				return player;
+			}
+		}
+
+		return playerDao.getPlayer(playerId);
+	}
+
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putLong(CURRENT_SHIFT_ID_KEY, currentShift);
+		outState.putLong(CURRENT_SHIFT_ID_KEY, getCurrentShift());
 		outState.putLong(CURRENT_VIEW_SHIFT_ID_KEY, currentlyViewingShift);
 		outState.putParcelable(SHIFT_MANAGER_KEY, shiftManager);
 		super.onSaveInstanceState(outState);
@@ -146,7 +180,7 @@ public class GameShift extends Activity {
 		currentButton = (Button) findViewById(R.id.seeCurrentShift);
 		currentButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				updateAttendingPlayerList(currentShift);
+				updateAttendingPlayerList(getCurrentShift());
 			}
 		});
 	}
@@ -164,14 +198,60 @@ public class GameShift extends Activity {
 		startButton = (Button) findViewById(R.id.startShiftTimerButton);
 		startButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (countDownTimer != null) {
-					countDownTimer.cancel();
-				}
-				createNewCountdownTimer();
-				shiftManager.startShift(currentShift);
-				updateShiftTimerHeaderText();
+				startShift();
 			}
 		});
+	}
+
+	private void initStopShiftButton() {
+		stopShiftButton = (Button) findViewById(R.id.stopShiftButton);
+		stopShiftButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+                stopCurrentTimer();
+            }
+		});
+	}
+
+	private void initSetAsCurrentShiftButton() {
+		setAsCurrentShiftButton = (Button) findViewById(R.id.setAsCurrentShiftButton);
+		setAsCurrentShiftButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                stopCurrentTimer();
+                setCurrentShift(currentlyViewingShift);
+            }
+        });
+	}
+
+    private void setCurrentShift(Long shiftId) {
+        game.setCurrentShiftId(shiftId);
+        gameDao.update(game);
+        updateAttendingPlayerList(getCurrentShift());
+    }
+
+    private void stopCurrentTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        cancelNotification();
+    }
+
+    private void startShift() {
+        stopCurrentTimer();
+		shiftManager.startShift(getCurrentShift());
+		createNewCountdownTimer();
+		Shift shift = shiftDao.getShiftByGameIdAndRank(game.getId(), getCurrentShift());
+		if (shift == null) {
+			shift = shiftDao.create(new Shift(new Date(), game.getId(), getCurrentShift()));
+		}
+		shiftDao.update(shift);
+
+		playerShiftDao.deleteAllForShift(shift.getId());
+		List<PlayerMetric> playersForShift = shiftManager.getPlayersForShift(getCurrentShift());
+		for (PlayerMetric playerMetric : playersForShift) {
+			PlayerShift playerShift = new PlayerShift(shift.getId(), playerMetric.getPlayer().getId(),  playerMetric.getPosition().name());
+			playerShiftDao.create(playerShift);
+		}
+		updateShiftTimerHeaderText();
 	}
 
 	private void updateAttendingPlayerList(Long shiftId) {
@@ -195,32 +275,49 @@ public class GameShift extends Activity {
 		Date startTimeForShift = shiftManager.getStartTimeForShift(currentlyViewingShift);
 		String startTimeForShiftString = startTimeForShift == null ? "" : " started at " + sdf.format(startTimeForShift);
 
-		headerText.setText("Currently viewing shift #" + (currentlyViewingShift + 1) + startTimeForShiftString);
+		headerText.setText("Current shift is #" + (getCurrentShift() + 1) + "\nNow viewing shift #" + (currentlyViewingShift + 1) + startTimeForShiftString);
 	}
 
 
 	private void createNewCountdownTimer() {
-		final Time time = new Time();
+        final Time time = new Time();
 
-        countDownTimer = new CountDownTimer(shiftLength * 1000, 1000) {
+        Date startTimeForShift = shiftManager.getStartTimeForShift(getCurrentShift());
+        long timeLeftInShift = (shiftLength * 1000) - (System.currentTimeMillis() - startTimeForShift.getTime());
+        countDownTimer = new CountDownTimer(timeLeftInShift, 1000) {
             public void onTick(long millisUntilFinished) {
-            	time.set(millisUntilFinished);
-            	countDown.setText(time.format("%M:%S"));
+                time.set(millisUntilFinished);
+                countDown.setText(time.format("%M:%S"));
             }
+
             public void onFinish() {
-            	countDown.setText("Time's up!");
-				currentShift++;
-				updateAttendingPlayerList(currentShift);
+                countDown.setText("Time's up!");
+                setCurrentShift(getCurrentShift() + 1);
+                updateAttendingPlayerList(getCurrentShift());
             }
-         };
-         countDownTimer.start();
-		scheduleNotification("Shift #" + (currentShift + 1) + " timer", shiftLength * 1000);
-	}
+        };
+        countDownTimer.start();
+        scheduleNotification("Shift #" + (getCurrentShift() + 1) + " timer", shiftLength * 1000);
+    }
+
+    private Long getCurrentShift() {
+        return game != null ? game.getCurrentShiftId() : 0l;
+    }
+
+    private void cancelNotification() {
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(0);
+
+        if (alarmIntent != null) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(alarmIntent);
+        }
+    }
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void scheduleNotification(String content, int delay) {
 		Intent notificationIntent = new Intent(this, GameShift.class);
-		notificationIntent.putExtra("GAME_ID", gameId);
+		notificationIntent.putExtra("GAME_ID", game.getId());
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		notificationIntent.setAction(Long.toString(System.currentTimeMillis()));
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -236,9 +333,9 @@ public class GameShift extends Activity {
 		notificationManager.notify(0, builder.build());
 
 		Intent intent = new Intent(SoccerManager.INTENT_SHIFT_TIMER_ENDED);
-		intent.putExtra(SoccerManager.CURRENT_SHIFT, currentShift);
-		intent.putExtra("GAME_ID", gameId);
-		PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+		intent.putExtra(SoccerManager.CURRENT_SHIFT, getCurrentShift());
+		intent.putExtra("GAME_ID", game.getId());
+        alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 		long futureInMillis = SystemClock.elapsedRealtime() + delay;
 		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, alarmIntent);

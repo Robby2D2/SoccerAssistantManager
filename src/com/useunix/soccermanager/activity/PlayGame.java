@@ -1,6 +1,7 @@
 package com.useunix.soccermanager.activity;
 
 import java.util.Date;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -38,7 +39,8 @@ public class PlayGame extends ListActivity {
 	private Long gameId;
 	private Team team;
 	private Date gameDate;
-    
+    private List<Player> allGamePlayers;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,19 +57,19 @@ public class PlayGame extends ListActivity {
         
         seeFirstShiftButton = (Button) findViewById(R.id.seeFirstShift);
         final Intent gameShiftIntent = new Intent(this, GameShift.class);
-		gameShiftIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         seeFirstShiftButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-//        		mainListView.getAdapter()
 				Game game = createGameAndAssignPlayers();
 				Log.d(TAG, "Starting new game, going to first shift.");
 				gameShiftIntent.putExtra("GAME_ID", game.getId());
 				startActivityForResult(gameShiftIntent, 2);
 			}
 		});
-        
+
+        gameId = getIntent().getExtras().getLong("GAME_ID");
+
         mainListView = getListView();
-        mainListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);	
+        mainListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         dataHelper = new SoccerManagerDataHelper(this);
         playerDao = new PlayerDao(dataHelper.getWritableDatabase());
         gamePlayerDao = new GamePlayerDao(dataHelper.getWritableDatabase());
@@ -75,7 +77,15 @@ public class PlayGame extends ListActivity {
 		teamDao = new TeamDao(dataHelper.getWritableDatabase());
 		team = teamDao.findTeamByName(teamName);
         fillData();
-        //registerForContextMenu(getListView());
+
+        allGamePlayers = playerDao.getAttendingPlayers(gameId);
+
+        for (int count = 0; count < mainListView.getCount(); count++) {
+            Cursor playerCursor = (Cursor)mainListView.getItemAtPosition(count);
+            Player player = playerDao.getPlayer(playerCursor);
+            boolean isPlayer = isPlayer(player.getId());
+            mainListView.setItemChecked(count, isPlayer);
+        }
     }
     
     private Game createGameAndAssignPlayers() {
@@ -102,11 +112,20 @@ public class PlayGame extends ListActivity {
     }
 
     private void fillData() {
-    	Cursor playerCursor = playerDao.getAllCursor(team.getId());
+        Cursor playerCursor = playerDao.getAllCursor(team.getId());
     	startManagingCursor(playerCursor);
     	setListAdapter(new PlayerListAdapter(this, playerCursor));
     }
-    
+
+    private boolean isPlayer(Long playerId) {
+        for (Player player : allGamePlayers) {
+            if (player.getId() == playerId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	private class PlayerListAdapter extends CursorAdapter {
 		private LayoutInflater layoutInflater;
 

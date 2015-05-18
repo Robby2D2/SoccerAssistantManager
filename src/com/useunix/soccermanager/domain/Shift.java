@@ -5,50 +5,35 @@ import java.util.Date;
 public class Shift {
 	Long id;
 	Date startTime;
-	String opponent;
-	Long currentShiftId;
+	Long gameId;
+	Long rank;
 
 	public Shift() {
 	}
 
-
-	public Shift(Long id, Date startTime, String opponent, Long currentShiftId) {
+	public Shift(Long id, Date startTime, Long gameId, Long rank) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
-		this.opponent = opponent;
-		this.currentShiftId = currentShiftId;
+		this.gameId = gameId;
+		this.rank = rank;
 	}
 
-
-	public Shift(Date startTime, String opponent, Long currentShiftId) {
+	public Shift(Date startTime, Long gameId, Long rank) {
 		super();
 		this.startTime = startTime;
-		this.opponent = opponent;
-		this.currentShiftId = currentShiftId;
-	}
+		this.gameId = gameId;
+		this.rank = rank;
 
+	}
 
 	public Date getStartTime() {
 		return startTime;
 	}
-
-
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-
-	public String getOpponent() {
-		return opponent;
-	}
-
-
-	public void setOpponent(String opponent) {
-		this.opponent = opponent;
-	}
-
-	
 	public Long getId() {
 		return id;
 	}
@@ -56,17 +41,23 @@ public class Shift {
 		this.id = id;
 	}
 
-	public Long getCurrentShiftId() {
-		return currentShiftId;
+	public Long getGameId() {
+		return gameId;
 	}
-	public void setCurrentShiftId(Long currentShiftId) {
-		this.currentShiftId = currentShiftId;
+	public void setGameId(Long gameId) {
+		this.gameId = gameId;
+	}
+
+	public Long getRank() {
+		return rank;
+	}
+	public void setRank(Long rank) {
+		this.rank = rank;
 	}
 
 	@Override
 	public String toString() {
-		return "Game [id=" + id + ", startTime=" + startTime + ", opponent="
-				+ opponent + ", currentShiftId=" + currentShiftId +"]";
+		return "Shift [id=" + id + ", startTime=" + startTime + ", gameId=" + gameId + ", rank=" + rank +"]";
 	}
 	
 	
