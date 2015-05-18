@@ -9,10 +9,7 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.useunix.soccermanager.domain.Player;
-import com.useunix.soccermanager.domain.PlayerMetric;
-import com.useunix.soccermanager.domain.PlayerMetricSummary;
-import com.useunix.soccermanager.domain.Position;
+import com.useunix.soccermanager.domain.*;
 
 public class ShiftManager implements Parcelable {
 	List<Player> allPlayers;
@@ -57,9 +54,9 @@ public class ShiftManager implements Parcelable {
 
 			// Assign positions to players.
 			for (Position position : Position.values()) {
-				// Determine who has played the position the least, then take
-				// random
-				List<Player> playersWithLeastAmountOfTimesAtPosition = determinePlayersWhoHavePlayedPositionTheLeast(playersInShift, position);
+				// Determine who has played the position the least, then take random
+				List<Player> playersWithLeastAmountOfTimesAtPositionType = determinePlayersWhoHavePlayedPositionTypeTheLeast(playersInShift, position.getPositionType());
+				List<Player> playersWithLeastAmountOfTimesAtPosition = determinePlayersWhoHavePlayedPositionTheLeast(playersWithLeastAmountOfTimesAtPositionType, position);
 
 				int randomIndex = secureRandom.nextInt(playersWithLeastAmountOfTimesAtPosition.size());
 				shiftPlayerPositions.add(new PlayerMetric(shiftId, position, playersWithLeastAmountOfTimesAtPosition.get(randomIndex)));
@@ -92,7 +89,23 @@ public class ShiftManager implements Parcelable {
 		}
 	}
 
-	private List<Player> determinePlayersWhoHavePlayedPositionTheLeast(List<Player> playersInShift, Position position) {
+	private List<Player> determinePlayersWhoHavePlayedPositionTypeTheLeast(List<Player> players, PositionType positionType) {
+		int minNumTimesAtPositionType = Integer.MAX_VALUE;
+		List<Player> playersWithLeastAmountOfTimesAtPositionType = new ArrayList<Player>();
+		for (Player player : players) {
+			int numTimesAtPosition = playerStats.get(player) == null ? 0 : playerStats.get(player).getTotalTimesPlayed(positionType);
+			if (numTimesAtPosition == minNumTimesAtPositionType) {
+				playersWithLeastAmountOfTimesAtPositionType.add(player);
+			} else if (numTimesAtPosition < minNumTimesAtPositionType) {
+				minNumTimesAtPositionType = numTimesAtPosition;
+				playersWithLeastAmountOfTimesAtPositionType = new ArrayList<Player>();
+				playersWithLeastAmountOfTimesAtPositionType.add(player);
+			}
+		}
+		return playersWithLeastAmountOfTimesAtPositionType;
+	}
+
+    private List<Player> determinePlayersWhoHavePlayedPositionTheLeast(List<Player> playersInShift, Position position) {
 		int minNumTimesAtPosition = Integer.MAX_VALUE;
 		List<Player> playersWithLeastAmountOfTimesAtPosition = new ArrayList<Player>();
 		for (Player player : playersInShift) {

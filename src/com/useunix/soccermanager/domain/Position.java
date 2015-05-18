@@ -1,26 +1,26 @@
 package com.useunix.soccermanager.domain;
 
 public enum Position {
-	GOALIE("Goalie")
-	, RIGHT_FORWARD("Right Forward")
-	, LEFT_FORWARD("Left Forward")
-	, CENTER_FORWARD("Center Forward")
-	, RIGHT_DEFENSE("Right Defense")
-	, LEFT_DEFENSE("Left Defense");
+	GOALIE("Goalie", PositionType.GOALIE)
+	, RIGHT_FORWARD("Right Forward", PositionType.FORWARD)
+	, LEFT_FORWARD("Left Forward", PositionType.FORWARD)
+	, CENTER_FORWARD("Center Forward", PositionType.FORWARD)
+	, RIGHT_DEFENSE("Right Defense", PositionType.DEFENSE)
+	, LEFT_DEFENSE("Left Defense", PositionType.DEFENSE);
 	
 	String name;
-	
-	Position(String name) {
+    PositionType positionType;
+
+	Position(String name, PositionType positionType) {
 		this.name = name;
+		this.positionType = positionType;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
+    public PositionType getPositionType() {
+        return positionType;
+    }
 }

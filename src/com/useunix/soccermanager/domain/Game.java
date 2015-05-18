@@ -9,23 +9,26 @@ public class Game {
 	Date startTime;
 	String opponent;
 	Long currentShiftId;
+    Long teamId;
 
-	public Game() {
+    public Game() {
 	}
 
-	public Game(Long id, Date startTime, String opponent, Long currentShiftId) {
+	public Game(Long id, Date startTime, String opponent, Long currentShiftId, Long teamId) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
 		this.opponent = opponent;
 		this.currentShiftId = currentShiftId;
+		this.teamId = teamId;
 	}
 
-	public Game(Date startTime, String opponent, Long currentShiftId) {
+	public Game(Date startTime, String opponent, Long currentShiftId, Long teamId) {
 		super();
 		this.startTime = startTime;
 		this.opponent = opponent;
 		this.currentShiftId = currentShiftId;
+        this.teamId = teamId;
 	}
 
 	public Date getStartTime() {
@@ -56,10 +59,17 @@ public class Game {
 		this.currentShiftId = currentShiftId;
 	}
 
-	@Override
+    public Long getTeamId() {
+        return teamId;
+    }
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
+    }
+
+    @Override
 	public String toString() {
 		return "Game [id=" + id + ", startTime=" + startTime + ", opponent="
-				+ opponent + ", currentShiftId=" + currentShiftId +"]";
+				+ opponent + ", currentShiftId=" + currentShiftId + ", teamId=" + teamId +"]";
 	}
 
 }

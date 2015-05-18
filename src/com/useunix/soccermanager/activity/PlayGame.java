@@ -66,7 +66,10 @@ public class PlayGame extends ListActivity {
 			}
 		});
 
-        gameId = getIntent().getExtras().getLong("GAME_ID");
+        Bundle intentExtras = getIntent().getExtras();
+        if (intentExtras != null) {
+            gameId = intentExtras.getLong("GAME_ID");
+        }
 
         mainListView = getListView();
         mainListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -96,6 +99,7 @@ public class PlayGame extends ListActivity {
 		} else {
 			game = new Game();
 			game.setStartTime(new Date());
+            game.setTeamId(team.getId());
 			game = gameDao.create(game);
 			gameId = game.getId();
 		}

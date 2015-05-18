@@ -12,8 +12,10 @@ package com.useunix.soccermanager.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -26,10 +28,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import com.useunix.soccermanager.R;
-import com.useunix.soccermanager.domain.GameDao;
-import com.useunix.soccermanager.domain.Player;
-import com.useunix.soccermanager.domain.PlayerDao;
-import com.useunix.soccermanager.domain.SoccerManagerDataHelper;
+import com.useunix.soccermanager.domain.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,25 +41,29 @@ public class GameList extends ListActivity {
     private static final int ACTIVITY_PLAY_GAME = 2;
 
 	private SoccerManagerDataHelper dataHelper;
-    private PlayerDao playerDao;
+    private TeamDao teamDao;
     private GameDao gameDao;
+    private Team team;
 
     private static final int CREATE_PLAYER_MENU_ID = Menu.FIRST;
     private static final int DELETE_PLAYER_MENU_ID = Menu.FIRST + 1;
     
     private Button createNewPlayerButton;
 
-    
-    
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_list);
-        
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String teamNameKey = getString(R.string.team_name_key);
+        String teamName = sharedPreferences.getString(teamNameKey, "Growl");
+
         dataHelper = new SoccerManagerDataHelper(this);
-        playerDao = new PlayerDao(dataHelper.getWritableDatabase());
         gameDao = new GameDao(dataHelper.getWritableDatabase());
+        teamDao = new TeamDao(dataHelper.getWritableDatabase());
+        team = teamDao.findTeamByName(teamName);
 
         createNewPlayerButton = (Button)findViewById(R.id.add_player_button);
         createNewPlayerButton.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +76,7 @@ public class GameList extends ListActivity {
     }
     
     private void fillData() {
-        Cursor gameCursor = gameDao.getAllCursor();
+        Cursor gameCursor = gameDao.getAllCursor(team.getId());
         startManagingCursor(gameCursor);
 
         // Create an array to specify the fields we want to display in the list (only TITLE)
@@ -83,10 +86,10 @@ public class GameList extends ListActivity {
         int[] to = new int[]{R.id.id, R.id.startTime, R.id.currentShift};
 
         // Now create a simple cursor adapter and set it to display
-        SimpleCursorAdapter players =
+        SimpleCursorAdapter gamesAdapter =
         	    new SimpleCursorAdapter(this, R.layout.game_list_row, gameCursor, from, to);
 
-        players.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+        gamesAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
 
@@ -102,7 +105,7 @@ public class GameList extends ListActivity {
             }
         });
 
-        setListAdapter(players);
+        setListAdapter(gamesAdapter);
     }
 
 

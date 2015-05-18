@@ -14,17 +14,20 @@ public class GameDao {
 	public static final String START_TIME_COL = "startTime";
 	public static final String OPPONENT_COL = "opponent";
 	public static final String CURRENT_SHIFT_ID_COL = "currentShiftId";
+	public static final String TEAM_ID_COL = "teamId";
 	public static final String[] ALL_COLUMNS = new String[] {
 		ID_COL,
 		START_TIME_COL,
 		OPPONENT_COL,
-		CURRENT_SHIFT_ID_COL
+		CURRENT_SHIFT_ID_COL,
+        TEAM_ID_COL
 	};
 	public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +  " ("
 		+ ID_COL + " integer primary key autoincrement"
 		+ ", " + START_TIME_COL + " integer not null"
 		+ ", " + OPPONENT_COL + " text"
 		+ ", " + CURRENT_SHIFT_ID_COL + " integer"
+		+ ", " + TEAM_ID_COL + " integer"
 		+ ")";
 	
 	private final SQLiteDatabase db;
@@ -38,6 +41,7 @@ public class GameDao {
 		values.put(START_TIME_COL, game.getStartTime().getTime());
 		values.put(OPPONENT_COL, game.getOpponent());
 		values.put(CURRENT_SHIFT_ID_COL, game.getCurrentShiftId());
+		values.put(TEAM_ID_COL, game.getTeamId());
 		long id = db.insert(TABLE_NAME, null, values);
 		game.setId(id);
 		return game;
@@ -48,13 +52,14 @@ public class GameDao {
         args.put(START_TIME_COL, game.getStartTime().getTime());
         args.put(OPPONENT_COL, game.getOpponent());
         args.put(CURRENT_SHIFT_ID_COL, game.getCurrentShiftId());
+        args.put(TEAM_ID_COL, game.getTeamId());
 
         return db.update(TABLE_NAME, args, ID_COL + "=" + game.getId(), null) > 0;
     }
 	
-	public List<Game> getAll() {
+	public List<Game> getAll(Long teamId) {
 		List<Game> list = new ArrayList<Game>();
-		Cursor cursor = getAllCursor();
+		Cursor cursor = getAllCursor(teamId);
 		if (cursor.moveToFirst()) {
 			do {
 				list.add(getGame(cursor));
@@ -71,14 +76,15 @@ public class GameDao {
 			cursor.getLong(cursor.getColumnIndexOrThrow(ID_COL)),
 			new Date(cursor.getLong(cursor.getColumnIndexOrThrow(START_TIME_COL))),
 			cursor.getString(cursor.getColumnIndexOrThrow(OPPONENT_COL)),
-			cursor.getLong(cursor.getColumnIndexOrThrow(CURRENT_SHIFT_ID_COL))
+			cursor.getLong(cursor.getColumnIndexOrThrow(CURRENT_SHIFT_ID_COL)),
+			cursor.getLong(cursor.getColumnIndexOrThrow(TEAM_ID_COL))
 		);
 		return game;
 	}
 
-	public Cursor getAllCursor() {
+	public Cursor getAllCursor(Long teamId) {
 		Cursor cursor = db.query(TABLE_NAME, ALL_COLUMNS,
-				null, null, null, null, 
+				TEAM_ID_COL + "=" + teamId, null, null, null,
 				START_TIME_COL + " desc");
 		return cursor;
 	}

@@ -45,6 +45,16 @@ public class PlayerMetricSummary {
 		return shiftsAtPosition == null ? 0 : shiftsAtPosition.size();
 	}
 
+	public int getTotalTimesPlayed(PositionType positionType) {
+        int timesAtPositionType= 0;
+        for (PlayerMetric playerMetric : metrics) {
+            if (playerMetric.getPosition().getPositionType() == positionType) {
+                timesAtPositionType++;
+            }
+        }
+		return timesAtPositionType;
+	}
+
 	@Override
 	public String toString() {
 		return "PlayerMetricSummary [player=" + player + ", metrics=" + metrics
