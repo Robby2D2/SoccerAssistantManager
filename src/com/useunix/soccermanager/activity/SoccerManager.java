@@ -36,11 +36,13 @@ public class SoccerManager extends Activity {
     private static final int ACTIVITY_PLAYER_LIST=1;
     private static final int ACTIVITY_PLAY_GAME=2;
     private static final int ACTIVITY_GAME_LIST=3;
+    private static final int ACTIVITY_TEAM_LIST=4;
     public static final String TAG = SoccerManager.class.getSimpleName();
     public static final String INTENT_SHIFT_TIMER_ENDED = SoccerManager.class.getName() + ".INTENT_SHIFT_TIMER_ENDED";
     public static final String CURRENT_SHIFT = SoccerManager.class.getName() + ".CURRENT_SHIFT";
 
 	private Button playerListButton;
+	private Button teamListButton;
 	private Button gameListButton;
 	private Button playGameButton;
 	private Button settingsButton;
@@ -66,6 +68,14 @@ public class SoccerManager extends Activity {
         playerListButton.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
                 startActivityForResult(playerListIntent, ACTIVITY_PLAYER_LIST);
+        	}
+        });
+
+        teamListButton = (Button) findViewById(R.id.team_list_button);
+        final Intent teamListIntent = new Intent(this, TeamList.class);
+        teamListButton.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View view) {
+                startActivityForResult(teamListIntent, ACTIVITY_TEAM_LIST);
         	}
         });
 

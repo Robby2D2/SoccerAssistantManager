@@ -9,11 +9,13 @@
     <string name="no_players_found">No players found.  Click the menu button to add a new player.</string>
     <string name="view_player_list">View players</string>
     <string name="view_game_list">View games</string>
+    <string name="view_team_list">View teams</string>
     <string name="create_player">Create new player</string>
     <string name="delete_player" formatted="false">Delete #%d, %s?</string>
     <string name="play_game_header">Game on %1$tb %1$te, %1$tY.</string>
     <string name="player_list">Player list</string>
     <string name="game_list">Game list</string>
+    <string name="team_list">Team list</string>
     <string name="play_game">Start new game</string>
     <string name="digital_clock_text">Current time</string>
     <string name="shift_stop_text">Stop</string>

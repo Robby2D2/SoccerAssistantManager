@@ -3,6 +3,7 @@ package com.useunix.soccermanager.activity;
 import java.util.Date;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.useunix.soccermanager.R;
 import com.useunix.soccermanager.domain.*;
 
+@TargetApi(11)
 public class PlayGame extends ListActivity {
 	private static final String TAG = ListActivity.class.getName();
 	
@@ -118,7 +120,7 @@ public class PlayGame extends ListActivity {
     private void fillData() {
         Cursor playerCursor = playerDao.getAllCursor(team.getId());
     	startManagingCursor(playerCursor);
-    	setListAdapter(new PlayerListAdapter(this, playerCursor));
+    	setListAdapter(new PlayerListAdapter(this, playerCursor, 0));
     }
 
     private boolean isPlayer(Long playerId) {
@@ -133,8 +135,8 @@ public class PlayGame extends ListActivity {
 	private class PlayerListAdapter extends CursorAdapter {
 		private LayoutInflater layoutInflater;
 
-		public PlayerListAdapter(Context context, Cursor c) {
-			super(context, c);
+		public PlayerListAdapter(Context context, Cursor c, int flags) {
+			super(context, c, flags);
 			layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 

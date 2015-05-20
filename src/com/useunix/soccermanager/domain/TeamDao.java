@@ -56,7 +56,7 @@ public class TeamDao {
 		return list;
 	}
 
-	private Team getTeam(Cursor cursor) {
+	public Team getTeam(Cursor cursor) {
 		Team team = new Team(
 			cursor.getLong(cursor.getColumnIndexOrThrow(ID_COL)),
 			cursor.getString(cursor.getColumnIndexOrThrow(NAME_COL))
