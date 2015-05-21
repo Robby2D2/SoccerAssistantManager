@@ -92,7 +92,13 @@ public class PlayGame extends ListActivity {
             mainListView.setItemChecked(count, isPlayer);
         }
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SoccerManager.updateTitle(this);
+    }
+
     private Game createGameAndAssignPlayers() {
 		Game game;
 		if (gameId != null) {

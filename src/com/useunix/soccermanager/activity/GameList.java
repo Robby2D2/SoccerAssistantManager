@@ -74,7 +74,13 @@ public class GameList extends ListActivity {
         
         fillData();
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SoccerManager.updateTitle(this);
+    }
+
     private void fillData() {
         Cursor gameCursor = gameDao.getAllCursor(team.getId());
         startManagingCursor(gameCursor);

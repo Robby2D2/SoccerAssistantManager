@@ -87,6 +87,7 @@ public class PlayerEdit extends Activity {
     protected void onResume() {
         super.onResume();
         populateFields();
+        SoccerManager.updateTitle(this);
     }
     
     private void saveState() {

@@ -56,7 +56,13 @@ public class PlayerList extends ListActivity {
         fillData();
         registerForContextMenu(getListView());
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SoccerManager.updateTitle(this);
+    }
+
     private void fillData() {
         Cursor playerCursor = playerDao.getAllCursor();
         startManagingCursor(playerCursor);

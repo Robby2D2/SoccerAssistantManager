@@ -116,7 +116,9 @@ public class TeamList extends ListActivity {
 //    	Intent i = new Intent(this, TeamEdit.class);
 //        startActivityForResult(i, ACTIVITY_CREATE_PLAYER);
     }
-    
+
+
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);

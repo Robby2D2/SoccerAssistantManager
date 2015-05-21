@@ -21,12 +21,15 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import com.useunix.soccermanager.R;
 
 @TargetApi(3)
@@ -52,16 +55,6 @@ public class SoccerManager extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-//        addPreferencesFromResource(preferencesResId);
-        
-        Intent intent = new Intent("com.useunix.soccermanager.TIMER_ENDED");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
-				SystemClock.elapsedRealtime() + 5 * 60 * 1000, pendingIntent);
-		PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-		WakeLock wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
-		wakeLock.setReferenceCounted(false);
 
         playerListButton = (Button) findViewById(R.id.player_list_button);
         final Intent playerListIntent = new Intent(this, PlayerList.class);
@@ -103,8 +96,22 @@ public class SoccerManager extends Activity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateTitle(this);
+    }
+
+    public static void updateTitle(Activity activity) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        String teamNameKey = activity.getString(R.string.team_name_key);
+        String teamName = sharedPreferences.getString(teamNameKey, "Growl");
+        activity.setTitle("Soccer Manager for Team " + teamName);
+    }
+
     public void showPreferences() {
     	final Intent intent = new Intent(this, SoccerManagerPreferencesActivity.class);
         startActivityForResult(intent, ACTIVITY_PREFERENCES);
     }
+
 }

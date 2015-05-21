@@ -160,10 +160,11 @@ public class GameShift extends Activity {
 		super.onRestart();
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SoccerManager.updateTitle(this);
+    }
 
 	private void initPreviousButton() {
 		previousButton = (Button) findViewById(R.id.seePreviousShift);

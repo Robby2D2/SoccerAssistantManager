@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Soccer Manager!</string>
     <string name="app_name">Soccer Manager</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
