@@ -8,6 +8,7 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +16,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -263,20 +265,31 @@ public class GameShift extends Activity {
 		List<PlayerMetric> playersForShift = shiftManager.getPlayersForShift(shiftId);
 		for (PlayerMetric playerMetric : playersForShift) {
 			Player player = playerMetric.getPlayer();
-			items.add(player.getFirstName() + " " + player.getLastName() + " - " + playerMetric.getPosition().getName());
+			items.add(player.getFirstName() + " " + player.getLastName() + "\n\t\t" + playerMetric.getPosition().getName());
 		}
         
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, items.toArray(new String[]{}));
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.game_shift_row, items.toArray(new String[]{})) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (position % 2 == 1) {
+                    view.setBackgroundColor(0xFF111111);
+                } else {
+                    view.setBackgroundColor(0xFF222222);
+                }
+                return view;
+            }
+        };
         attendingPlayerListView.setAdapter(adapter);
 	}
 
 	private void updateShiftTimerHeaderText() {
-		final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		final SimpleDateFormat sdf = new SimpleDateFormat("hh:mma");
 
 		Date startTimeForShift = shiftManager.getStartTimeForShift(currentlyViewingShift);
 		String startTimeForShiftString = startTimeForShift == null ? "" : " started at " + sdf.format(startTimeForShift);
 
-		headerText.setText("Current shift is #" + (getCurrentShift() + 1) + "\nNow viewing shift #" + (currentlyViewingShift + 1) + startTimeForShiftString);
+		headerText.setText("Current shift is #" + (getCurrentShift() + 1) + "\nViewing shift #" + (currentlyViewingShift + 1) + startTimeForShiftString);
 	}
 
 
@@ -298,7 +311,7 @@ public class GameShift extends Activity {
             }
         };
         countDownTimer.start();
-        scheduleNotification("Shift #" + (getCurrentShift() + 1) + " timer", shiftLength * 1000);
+        scheduleNotification("Shift #" + (getCurrentShift() + 1) + " timer", timeLeftInShift);
     }
 
     private Long getCurrentShift() {
@@ -316,7 +329,7 @@ public class GameShift extends Activity {
     }
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void scheduleNotification(String content, int delay) {
+	private void scheduleNotification(String content, long delay) {
 		Intent notificationIntent = new Intent(this, GameShift.class);
 		notificationIntent.putExtra("GAME_ID", game.getId());
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

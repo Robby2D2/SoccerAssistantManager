@@ -5,43 +5,57 @@
     android:orientation="vertical"
     android:padding="0dp" >
 
-<TextView android:id="@+id/play_game_header_text"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:background="#666666"
-	    android:textColor="#FFFFFF"/>
+<LinearLayout android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:background="#444444"
+            android:layout_height="wrap_content">
 
-<TextView  
-    android:layout_width="match_parent" 
-    android:layout_height="wrap_content" 
-    android:gravity="center"
-    android:textSize="35sp"
-    android:id="@+id/countDown"
-    />
-<LinearLayout
-        android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+        <TextView android:id="@+id/play_game_header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="#FFFFFF"/>
 
-	<Button android:id="@+id/startShiftTimerButton"
-		android:text="@string/startShiftTimerButtonText"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-
-	<Button android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/stopShiftButton"
-	        android:text="@string/shift_stop_text"/>
     <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="5dp">
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/setAsCurrentShiftButton"
                 android:text="@string/shift_set_current_text"
-                android:layout_gravity="right"
-                />
-        </LinearLayout>
+                android:layout_gravity="center_vertical|right"
+                android:padding="6dp"/>
+    </LinearLayout>
+</LinearLayout>
+<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#777777" android:paddingTop="5dp">
+
+	<Button android:id="@+id/startShiftTimerButton"
+		android:text="@string/startShiftTimerButtonText"
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+	<Button android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+            android:id="@+id/stopShiftButton"
+	        android:text="@string/shift_stop_text"/>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="35sp"
+                android:textColor="#FFFFFF"
+                android:id="@+id/countDown"
+                android:layout_gravity="right"/>
+    </LinearLayout>
 </LinearLayout>
 
 <!--  List of players and positions -->
@@ -49,31 +63,37 @@
     <ListView
     android:id="@+id/attendingPlayers"
     android:background="@android:color/transparent"
-    android:layout_width="wrap_content"
-    android:layout_height="0dip"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
     android:layout_weight="1"
-    android:divider="@android:color/transparent"
-  	android:dividerHeight="-20.0sp" />
+    />
 
     <LinearLayout
-    android:orientation="horizontal"
+    android:orientation="vertical"
+    android:background="#777777"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
-    
-	<Button android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/seePreviousShift"
-	        android:text="@string/seePreviousShift"/>
-	
-	<Button android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/seeCurrentShift"
-	        android:text="@string/seeCurrentShift"/>
-	
-	<Button android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/seeNextShift"
-	        android:text="@string/seeNextShift"/>
-</LinearLayout>
+    android:layout_height="wrap_content" android:paddingTop="5dp">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seePreviousShift"
+                    android:text="@string/seePreviousShift"/>
+
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seeCurrentShift"
+                    android:text="@string/seeCurrentShift"/>
+
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seeNextShift"
+                    android:text="@string/seeNextShift"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

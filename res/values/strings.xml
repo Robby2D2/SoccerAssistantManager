@@ -19,7 +19,7 @@
     <string name="digital_clock_text">Current time</string>
     <string name="shift_stop_text">Stop</string>
     <string name="shift_set_current_text">Set current</string>
-    <string name="seeFirstShift">See first shift</string>
+    <string name="seeFirstShift">See shifts</string>
     <string name="seePreviousShift">Previous shift</string>
     <string name="seeCurrentShift">Current shift</string>
     <string name="seeNextShift">Next shift</string>
