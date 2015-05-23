@@ -16,9 +16,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 import com.useunix.soccermanager.R;
-import com.useunix.soccermanager.domain.Player;
-import com.useunix.soccermanager.domain.PlayerDao;
-import com.useunix.soccermanager.domain.SoccerManagerDataHelper;
+import com.useunix.soccermanager.domain.*;
 
 public class PlayerList extends ListActivity {
 	private static final String TAG = PlayerList.class.getName();
@@ -28,12 +26,13 @@ public class PlayerList extends ListActivity {
     
 	private SoccerManagerDataHelper dataHelper;
     private PlayerDao playerDao;
-    
+    private TeamDao teamDao;
+
     private static final int CREATE_PLAYER_MENU_ID = Menu.FIRST;
     private static final int DELETE_PLAYER_MENU_ID = Menu.FIRST + 1;
     
     private Button createNewPlayerButton;
-
+    private Team team;
     
     
     /** Called when the activity is first created. */
@@ -44,7 +43,9 @@ public class PlayerList extends ListActivity {
         
         dataHelper = new SoccerManagerDataHelper(this);
         playerDao = new PlayerDao(dataHelper.getWritableDatabase());
-        
+        teamDao = new TeamDao(dataHelper.getWritableDatabase());
+        team = SoccerManager.getActiveTeam(this, teamDao);
+
         createNewPlayerButton = (Button)findViewById(R.id.add_player_button);
         createNewPlayerButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -53,18 +54,18 @@ public class PlayerList extends ListActivity {
             }
         });
         
-        fillData();
         registerForContextMenu(getListView());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        fillData();
         SoccerManager.updateTitle(this);
     }
 
     private void fillData() {
-        Cursor playerCursor = playerDao.getAllCursor();
+        Cursor playerCursor = playerDao.getAllCursor(team.getId());
         startManagingCursor(playerCursor);
         
         // Create an array to specify the fields we want to display in the list (only TITLE)

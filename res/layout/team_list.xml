@@ -28,7 +28,29 @@
        	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:text="@string/no_teams_found"/>
-<Button android:layout_width="match_parent"
+
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:background="#777777"
+            android:paddingTop="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <Button android:id="@+id/player_list_button"
+                android:text="@string/view_player_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <Button android:id="@+id/game_list_button"
+                android:text="@string/view_game_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_gravity="right"/>
+        </LinearLayout>
+    </LinearLayout>
+    <Button android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/add_team_button"
         android:text="@string/create_team"/>

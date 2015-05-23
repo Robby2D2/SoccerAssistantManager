@@ -3,28 +3,30 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:focusable="true">
 
-<Button android:id="@+id/play_game_button" 
-	android:text="@string/play_game"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_gravity="center_horizontal">
+        <Button android:id="@+id/play_game_button"
+        android:text="@string/play_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"/>
+        <Button android:id="@+id/team_list_button"
+        android:text="@string/view_team_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/play_game_button" android:layout_alignParentRight="true"/>
+        <Button android:id="@+id/settings_button"
+        android:text="@string/settings_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" android:layout_alignParentLeft="true"/>
+        <Button android:id="@+id/resume_game_button" android:text="@string/resume_game" android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/play_game_button" android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
 
-<Button android:id="@+id/player_list_button" 
-	android:text="@string/view_player_list"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
 
-<Button android:id="@+id/team_list_button"
-	android:text="@string/view_team_list"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-
-    <Button android:id="@+id/game_list_button" android:text="@string/view_game_list"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/settings_button"
-	android:text="@string/settings_text"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" />
-    
 </LinearLayout>

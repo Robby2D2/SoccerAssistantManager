@@ -2,6 +2,8 @@ package com.useunix.soccermanager.receiver;
 
 import java.util.ArrayList;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Vibrator;
 import com.useunix.soccermanager.R;
 import com.useunix.soccermanager.activity.GameShift;
@@ -21,6 +23,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.widget.Toast;
+import com.useunix.soccermanager.services.RingtonePlayingService;
 
 public class AlarmReceiver extends BroadcastReceiver {
 	private PowerManager.WakeLock mWakeLock = null;
@@ -51,9 +54,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Long currentShift = intent.getLongExtra(SoccerManager.CURRENT_SHIFT, 0);
 
 		Toast.makeText(mContext, "Time is up!  Shift #" + (currentShift + 1) + " is done!", Toast.LENGTH_LONG).show();
-		// Vibrate the mobile phone
-		Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.vibrate(2000);
+
+        playAlarm(mContext);
 
 		Intent notificationIntent = new Intent(mContext, GameShift.class);
 		notificationIntent.putExtra("GAME_ID", intent.getLongExtra("GAME_ID", 0));
@@ -70,5 +72,16 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		mNotificationManager.notify(0, builder.build());
 	}
+
+    public static void playAlarm(Context mContext) {
+        Intent startIntent = new Intent(mContext, RingtonePlayingService.class);
+//        ringtoneServiceStartIntent.putExtra("ringtone-uri", ringtoneUri);
+        mContext.startService(startIntent);
+    }
+
+    public static void stopAlarm(Context mContext) {
+        Intent stopIntent = new Intent(mContext, RingtonePlayingService.class);
+        mContext.stopService(stopIntent);
+    }
 
 }

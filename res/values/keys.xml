@@ -2,7 +2,8 @@
 
 
 <resources>
-	<string name="debug_key">debug_key</string>
+	<string name="alarm_vibrate_key">alarm_vibrate_key</string>
+	<string name="alarm_sound_key">alarm_sound_key</string>
 	<string name="shift_length_key">shift_length_key</string>
 	<string name="team_name_key">team_name_key</string>
 </resources>

@@ -27,7 +27,7 @@
 <TextView android:id="@+id/android:empty"
        	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:text="@string/no_players_found"/>
+    	android:text="@string/no_games_found"/>
 <Button android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/startNewGameButton"

@@ -31,8 +31,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.useunix.soccermanager.R;
+import com.useunix.soccermanager.domain.*;
 
-@TargetApi(3)
+@TargetApi(11)
 public class SoccerManager extends Activity {
 
     private static final int ACTIVITY_PREFERENCES=0;
@@ -44,25 +45,20 @@ public class SoccerManager extends Activity {
     public static final String INTENT_SHIFT_TIMER_ENDED = SoccerManager.class.getName() + ".INTENT_SHIFT_TIMER_ENDED";
     public static final String CURRENT_SHIFT = SoccerManager.class.getName() + ".CURRENT_SHIFT";
 
-	private Button playerListButton;
 	private Button teamListButton;
-	private Button gameListButton;
+	private Button resumeGameButton;
 	private Button playGameButton;
 	private Button settingsButton;
-	
+
+    private SoccerManagerDataHelper dataHelper;
+    private GameDao gameDao;
+    private TeamDao teamDao;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        playerListButton = (Button) findViewById(R.id.player_list_button);
-        final Intent playerListIntent = new Intent(this, PlayerList.class);
-        playerListButton.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View view) {
-                startActivityForResult(playerListIntent, ACTIVITY_PLAYER_LIST);
-        	}
-        });
 
         teamListButton = (Button) findViewById(R.id.team_list_button);
         final Intent teamListIntent = new Intent(this, TeamList.class);
@@ -72,14 +68,6 @@ public class SoccerManager extends Activity {
         	}
         });
 
-        gameListButton = (Button) findViewById(R.id.game_list_button);
-        final Intent gameListIntent = new Intent(this, GameList.class);
-        gameListButton.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View view) {
-                startActivityForResult(gameListIntent, ACTIVITY_GAME_LIST);
-        	}
-        });
-        
         playGameButton = (Button) findViewById(R.id.play_game_button);
         final Intent playGameIntent = new Intent(this, PlayGame.class);
         playGameButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +75,23 @@ public class SoccerManager extends Activity {
                 startActivityForResult(playGameIntent, ACTIVITY_PLAY_GAME);
         	}
         });
-        
+
+        dataHelper = new SoccerManagerDataHelper(this);
+        gameDao = new GameDao(dataHelper.getWritableDatabase());
+        teamDao = new TeamDao(dataHelper.getWritableDatabase());
+        Team team = SoccerManager.getActiveTeam(this, teamDao);
+        resumeGameButton = (Button) findViewById(R.id.resume_game_button);
+        final Intent resumeGameIntent = new Intent(this, GameShift.class);
+        Game mostRecentGame = gameDao.findMostRecentGame(team.getId());
+        if (mostRecentGame != null) {
+            resumeGameIntent.putExtra("GAME_ID", mostRecentGame.getId());
+        }
+        resumeGameButton.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View view) {
+                startActivityForResult(resumeGameIntent, ACTIVITY_PLAY_GAME);
+        	}
+        });
+
         settingsButton = (Button) findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
@@ -102,10 +106,18 @@ public class SoccerManager extends Activity {
         updateTitle(this);
     }
 
-    public static void updateTitle(Activity activity) {
+    public static Team getActiveTeam(Activity activity, TeamDao teamDao) {
+        return teamDao.findTeamByName(getActiveTeamName(activity));
+    }
+
+    private static String getActiveTeamName(Activity activity) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         String teamNameKey = activity.getString(R.string.team_name_key);
-        String teamName = sharedPreferences.getString(teamNameKey, "Growl");
+        return sharedPreferences.getString(teamNameKey, "Growl");
+    }
+
+    public static void updateTitle(Activity activity) {
+        String teamName = getActiveTeamName(activity);
         activity.setTitle("Soccer Manager for Team " + teamName);
     }
 

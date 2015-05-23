@@ -111,4 +111,12 @@ public class GameDao {
 		
 	}
 
+    public Game findMostRecentGame(Long teamId) {
+        Cursor cursor = getAllCursor(teamId);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return getGame(cursor);
+        }
+        return null;
+    }
 }

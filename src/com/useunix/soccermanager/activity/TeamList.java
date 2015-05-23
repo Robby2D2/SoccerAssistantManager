@@ -39,9 +39,12 @@ public class TeamList extends ListActivity {
     private static final int CREATE_TEAM_MENU_ID = Menu.FIRST;
     private static final int ACTIVITY_CREATE_TEAM = 1;
     private static final int ACTIVITY_EDIT_TEAM = 2;
+    private static final int ACTIVITY_PLAYER_LIST = 3;
+    private static final int ACTIVITY_GAME_LIST = 4;
 
     private Button createNewTeamButton;
-
+    private Button playerListButton;
+    private Button gameListButton;
 
     /** Called when the activity is first created. */
     @Override
@@ -72,6 +75,23 @@ public class TeamList extends ListActivity {
                 return true;
             }
         });
+
+        playerListButton = (Button) findViewById(R.id.player_list_button);
+        final Intent playerListIntent = new Intent(this, PlayerList.class);
+        playerListButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startActivityForResult(playerListIntent, ACTIVITY_PLAYER_LIST);
+            }
+        });
+
+        gameListButton = (Button) findViewById(R.id.game_list_button);
+        final Intent gameListIntent = new Intent(this, GameList.class);
+        gameListButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startActivityForResult(gameListIntent, ACTIVITY_GAME_LIST);
+            }
+        });
+
     }
 
     @Override

@@ -10,7 +10,7 @@
     <string name="no_games_found">No games found.  Click below to start a new game.</string>
     <string name="view_player_list">View players</string>
     <string name="view_game_list">View games</string>
-    <string name="view_team_list">View teams</string>
+    <string name="view_team_list">Manage teams</string>
     <string name="create_player">Create new player</string>
     <string name="create_team">Create new team</string>
     <string name="delete_player" formatted="false">Delete #%d, %s?</string>
@@ -28,7 +28,8 @@
     <string name="seeNextShift">Next shift</string>
     <string name="startShiftTimerButtonText">Start</string>
     <string name="debug_settings">Debug settings</string>
-    <string name="debug_text">Debug app</string>
+    <string name="alarm_vibrate_text">Vibrate when time is up?</string>
+    <string name="alarm_sound_text">Play alarm when time is up?</string>
     <string name="shift_length_seconds">Length of each shift in seconds</string>
     <string name="shift_length_default">300</string>
     <string name="settings_text">Settings</string>
@@ -36,6 +37,8 @@
 
     <string name="team_name">Team name</string>
     <string name="team_name_default">Growl</string>
+    <string name="delete_team">Delete this team</string>
+    <string name="resume_game">Resume most recent game</string>
 
 
 </resources>

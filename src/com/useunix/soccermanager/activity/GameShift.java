@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.useunix.soccermanager.R;
 import com.useunix.soccermanager.domain.*;
+import com.useunix.soccermanager.receiver.AlarmReceiver;
 import com.useunix.soccermanager.services.ShiftManager;
 
 @TargetApi(3)
@@ -166,6 +167,7 @@ public class GameShift extends Activity {
     protected void onResume() {
         super.onResume();
         SoccerManager.updateTitle(this);
+        AlarmReceiver.stopAlarm(this);
     }
 
 	private void initPreviousButton() {
@@ -207,10 +209,12 @@ public class GameShift extends Activity {
 	}
 
 	private void initStopShiftButton() {
+        final Activity mContext = this;
 		stopShiftButton = (Button) findViewById(R.id.stopShiftButton);
 		stopShiftButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
                 stopCurrentTimer();
+                AlarmReceiver.stopAlarm(mContext);
             }
 		});
 	}

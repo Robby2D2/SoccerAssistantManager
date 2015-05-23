@@ -15,6 +15,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,8 @@ public class TeamEdit extends Activity {
     private Long id;
     private SoccerManagerDataHelper soccerManagerDataHelper;
     private TeamDao teamDao;
+
+    private static final int DELETE_TEAM_MENU_ID = Menu.FIRST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,32 @@ public class TeamEdit extends Activity {
         	}
         });
     }
-    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, DELETE_TEAM_MENU_ID, 0, R.string.delete_team);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+            case DELETE_TEAM_MENU_ID:
+                deleteTeam();
+                return true;
+        }
+
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void deleteTeam() {
+        teamDao.delete(id);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+
     private void populateFields() {
         if (id != null) {
             Team team = teamDao.getTeam(id);
@@ -68,14 +97,15 @@ public class TeamEdit extends Activity {
 
     private void saveState() {
         String teamName = teamNameText.getText().toString();
-
-        if (id == null) {
-            long newId = teamDao.create(new Team(teamName)).getId();
-            if (newId > 0) {
-                id = newId;
+        if (teamName.length() > 0) {
+            if (id == null) {
+                long newId = teamDao.create(new Team(teamName)).getId();
+                if (newId > 0) {
+                    id = newId;
+                }
+            } else {
+                teamDao.update(new Team(id, teamName));
             }
-        } else {
-            teamDao.update(new Team(id, teamName));
         }
     }
     

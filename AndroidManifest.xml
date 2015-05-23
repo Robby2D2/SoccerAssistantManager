@@ -43,7 +43,8 @@
 					android:name="com.useunix.soccermanager.activity.SoccerManager.INTENT_SHIFT_TIMER_ENDED" />
 			</intent-filter>
 		</receiver>
-		
+
+        <service android:name=".services.RingtonePlayingService" />
 	</application>
 
 </manifest> 

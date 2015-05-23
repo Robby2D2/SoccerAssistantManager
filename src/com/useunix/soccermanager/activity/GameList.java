@@ -10,6 +10,7 @@
 
 package com.useunix.soccermanager.activity;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,14 +57,11 @@ public class GameList extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_list);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String teamNameKey = getString(R.string.team_name_key);
-        String teamName = sharedPreferences.getString(teamNameKey, "Growl");
 
         dataHelper = new SoccerManagerDataHelper(this);
         gameDao = new GameDao(dataHelper.getWritableDatabase());
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
-        team = teamDao.findTeamByName(teamName);
+        team = SoccerManager.getActiveTeam(this, teamDao);
 
         startNewGameButton = (Button)findViewById(R.id.startNewGameButton);
 
@@ -74,13 +72,14 @@ public class GameList extends ListActivity {
                 Log.d(TAG, "createNewPlayerButton clicked");
             }
         });
-        
-        fillData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        fillData();
+
         SoccerManager.updateTitle(this);
     }
 
