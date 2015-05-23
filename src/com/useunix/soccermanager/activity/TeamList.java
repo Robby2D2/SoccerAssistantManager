@@ -37,16 +37,17 @@ public class TeamList extends ListActivity {
     private String teamName;
     private ListView mainListView;
     private static final int CREATE_TEAM_MENU_ID = Menu.FIRST;
-    private static final int DELETE_TEAM_MENU_ID = Menu.FIRST + 1;
-    
-    private Button createNewPlayerButton;
+    private static final int ACTIVITY_CREATE_TEAM = 1;
+    private static final int ACTIVITY_EDIT_TEAM = 2;
+
+    private Button createNewTeamButton;
 
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_list);
+        setContentView(R.layout.team_list);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String teamNameKey = getString(R.string.team_name_key);
         teamName = sharedPreferences.getString(teamNameKey, "Growl");
@@ -55,15 +56,28 @@ public class TeamList extends ListActivity {
         gameDao = new GameDao(dataHelper.getWritableDatabase());
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
 
-        createNewPlayerButton = (Button)findViewById(R.id.add_player_button);
-        createNewPlayerButton.setOnClickListener(new View.OnClickListener() {
+        createNewTeamButton = (Button)findViewById(R.id.add_team_button);
+        createNewTeamButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d(TAG, "createNewPlayerButton clicked");
+                Log.d(TAG, "createNewTeamButton clicked");
+                createNewTeam();
             }
         });
         mainListView = getListView();
-        fillData();
         mainListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        mainListView.setLongClickable(true);
+        mainListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+                editTeam(id);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillData();
 
         for (int count = 0; count < mainListView.getCount(); count++) {
             Cursor teamCursor = (Cursor)mainListView.getItemAtPosition(count);
@@ -73,7 +87,18 @@ public class TeamList extends ListActivity {
             }
         }
     }
-    
+
+    private void editTeam(long teamId) {
+        Intent i = new Intent(this, TeamEdit.class);
+        i.putExtra(TeamDao.ID_COL, teamId);
+        startActivityForResult(i, ACTIVITY_EDIT_TEAM);
+    }
+
+    public void createNewTeam() {
+        Intent i = new Intent(this, TeamEdit.class);
+        startActivityForResult(i, ACTIVITY_CREATE_TEAM);
+    }
+
     private void fillData() {
         Cursor teamCursor = teamDao.getAllCursor();
 
@@ -111,13 +136,6 @@ public class TeamList extends ListActivity {
        
         return super.onMenuItemSelected(featureId, item);
     }
-    
-    public void createNewTeam() {
-//    	Intent i = new Intent(this, TeamEdit.class);
-//        startActivityForResult(i, ACTIVITY_CREATE_PLAYER);
-    }
-
-
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {

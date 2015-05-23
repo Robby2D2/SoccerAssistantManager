@@ -30,6 +30,6 @@
     	android:text="@string/no_players_found"/>
 <Button android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/add_player_button"
-        android:text="@string/create_player"/>
+        android:id="@+id/startNewGameButton"
+        android:text="@string/play_game"/>
 </LinearLayout>

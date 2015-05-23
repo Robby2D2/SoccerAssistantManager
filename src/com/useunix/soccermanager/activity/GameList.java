@@ -48,7 +48,7 @@ public class GameList extends ListActivity {
     private static final int CREATE_PLAYER_MENU_ID = Menu.FIRST;
     private static final int DELETE_PLAYER_MENU_ID = Menu.FIRST + 1;
     
-    private Button createNewPlayerButton;
+    private Button startNewGameButton;
 
 
     /** Called when the activity is first created. */
@@ -65,9 +65,12 @@ public class GameList extends ListActivity {
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
         team = teamDao.findTeamByName(teamName);
 
-        createNewPlayerButton = (Button)findViewById(R.id.add_player_button);
-        createNewPlayerButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        startNewGameButton = (Button)findViewById(R.id.startNewGameButton);
+
+        final Intent playGameIntent = new Intent(this, PlayGame.class);
+        startNewGameButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startActivityForResult(playGameIntent, ACTIVITY_PLAY_GAME);
                 Log.d(TAG, "createNewPlayerButton clicked");
             }
         });

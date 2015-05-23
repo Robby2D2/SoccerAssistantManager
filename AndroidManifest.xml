@@ -30,6 +30,7 @@
 	    <activity android:name=".activity.GameList" android:launchMode="singleTop"></activity>
 	    <activity android:name=".activity.TeamList" android:launchMode="singleTop"></activity>
 		<activity android:name=".activity.PlayerEdit" android:launchMode="singleTop"></activity>
+		<activity android:name=".activity.TeamEdit" android:launchMode="singleTop"></activity>
 		<activity android:name=".activity.PlayGame" android:launchMode="singleTop"></activity>
 		<activity android:name=".activity.GameShift" android:launchMode="singleTop"></activity>
 		<activity android:name=".activity.SoccerManagerPreferencesActivity" android:launchMode="singleTop"></activity>

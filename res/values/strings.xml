@@ -6,10 +6,13 @@
     <string name="id_label">ID</string>
     <string name="save">Save</string>
     <string name="no_players_found">No players found.  Click the menu button to add a new player.</string>
+    <string name="no_teams_found">No teams found.  Click below to add a new team.</string>
+    <string name="no_games_found">No games found.  Click below to start a new game.</string>
     <string name="view_player_list">View players</string>
     <string name="view_game_list">View games</string>
     <string name="view_team_list">View teams</string>
     <string name="create_player">Create new player</string>
+    <string name="create_team">Create new team</string>
     <string name="delete_player" formatted="false">Delete #%d, %s?</string>
     <string name="play_game_header">Game on %1$tb %1$te, %1$tY.</string>
     <string name="player_list">Player list</string>
