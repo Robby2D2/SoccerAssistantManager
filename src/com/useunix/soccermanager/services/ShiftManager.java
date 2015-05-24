@@ -56,11 +56,13 @@ public class ShiftManager implements Parcelable {
 			for (Position position : Position.values()) {
 				// Determine who has played the position the least, then take random
 				List<Player> playersWithLeastAmountOfTimesAtPositionType = determinePlayersWhoHavePlayedPositionTypeTheLeast(playersInShift, position.getPositionType());
-				List<Player> playersWithLeastAmountOfTimesAtPosition = determinePlayersWhoHavePlayedPositionTheLeast(playersWithLeastAmountOfTimesAtPositionType, position);
+				playersWithLeastAmountOfTimesAtPositionType = determinePlayersWhoHavePlayedLeastRecently(playersWithLeastAmountOfTimesAtPositionType, position.getPositionType());
+				playersWithLeastAmountOfTimesAtPositionType = determinePlayersWhoHavePlayedPositionTheLeast(playersWithLeastAmountOfTimesAtPositionType, position);
+				playersWithLeastAmountOfTimesAtPositionType = determinePlayersWhoHavePlayedLeastRecently(playersWithLeastAmountOfTimesAtPositionType, position);
 
-				int randomIndex = secureRandom.nextInt(playersWithLeastAmountOfTimesAtPosition.size());
-				shiftPlayerPositions.add(new PlayerMetric(shiftId, position, playersWithLeastAmountOfTimesAtPosition.get(randomIndex)));
-				playersInShift.remove(playersWithLeastAmountOfTimesAtPosition.get(randomIndex));
+				int randomIndex = secureRandom.nextInt(playersWithLeastAmountOfTimesAtPositionType.size());
+				shiftPlayerPositions.add(new PlayerMetric(shiftId, position, playersWithLeastAmountOfTimesAtPositionType.get(randomIndex)));
+				playersInShift.remove(playersWithLeastAmountOfTimesAtPositionType.get(randomIndex));
 			}
 
 			updateMetrics(shiftId, shiftPlayerPositions);
@@ -121,6 +123,38 @@ public class ShiftManager implements Parcelable {
 		return playersWithLeastAmountOfTimesAtPosition;
 	}
 
+	private List<Player> determinePlayersWhoHavePlayedLeastRecently(List<Player> playersInShift, PositionType positionType) {
+		Long minMostRecentShift = Long.MAX_VALUE;
+		List<Player> playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
+		for (Player player : playersInShift) {
+			Long mostRecentShift = playerStats.get(player) == null ? 0l : playerStats.get(player).getMostRecentShift(positionType);
+			if (mostRecentShift == minMostRecentShift) {
+				playersWhoHaveNotPlayedRecently.add(player);
+			} else if (mostRecentShift < minMostRecentShift) {
+				minMostRecentShift = mostRecentShift;
+				playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
+				playersWhoHaveNotPlayedRecently.add(player);
+			}
+		}
+		return playersWhoHaveNotPlayedRecently;
+	}
+
+	private List<Player> determinePlayersWhoHavePlayedLeastRecently(List<Player> playersInShift, Position position) {
+		Long minMostRecentShift = Long.MAX_VALUE;
+		List<Player> playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
+		for (Player player : playersInShift) {
+			Long mostRecentShift = playerStats.get(player) == null ? 0l : playerStats.get(player).getMostRecentShift(position);
+			if (mostRecentShift == minMostRecentShift) {
+				playersWhoHaveNotPlayedRecently.add(player);
+			} else if (mostRecentShift < minMostRecentShift) {
+				minMostRecentShift = mostRecentShift;
+				playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
+				playersWhoHaveNotPlayedRecently.add(player);
+			}
+		}
+		return playersWhoHaveNotPlayedRecently;
+	}
+
 	private List<Player> determinePlayersWhoHavePlayedLeastRecently(List<Player> playersInShift) {
 		Long minMostRecentShift = Long.MAX_VALUE;
 		List<Player> playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
@@ -138,6 +172,9 @@ public class ShiftManager implements Parcelable {
 	}
 
 	private List<Player> determinePlayersInNextShift() {
+        String metricsString = metricsToString();
+        System.out.println(metricsString);
+
 		List<Player> playersInShift = new ArrayList<Player>();
 		List<Player> playersOnBench = new ArrayList<Player>();
 		playersOnBench.addAll(allPlayers);
@@ -159,6 +196,8 @@ public class ShiftManager implements Parcelable {
 				}
 
 				// Determine who was in most recently
+                // TODO Need unit tests around this - doesn't seem right as second pass may add several players that
+                // have played more recently the winner is then randomly chosen.
 				List<Player> leastActivePlayers = determinePlayersWhoHavePlayedLeastRecently(whoIsUpNext);
 				while (leastActivePlayers.size() < numPlayersToAdd && count++ < 100) {
 					whoIsUpNext.removeAll(leastActivePlayers);
@@ -242,4 +281,18 @@ public class ShiftManager implements Parcelable {
 	public void setShiftStartTimes(HashMap<Long, Date> shiftStartTimes) {
 		this.shiftStartTimes = shiftStartTimes;
 	}
+
+    public String metricsToString() {
+        String metricsString = "";
+        for (Player player : playerStats.keySet()) {
+            String positionsPlayedString = "";
+            PlayerMetricSummary playerMetricSummary = playerStats.get(player);
+            List<PlayerMetric> metrics = playerMetricSummary.getMetrics();
+            for (PlayerMetric metric : metrics) {
+                positionsPlayedString += ", " + metric.getShiftId() + ": " + metric.getPosition();
+            }
+            metricsString += "\n" + player.getFirstName() + " " + player.getLastName() + ": " + metrics.size() + positionsPlayedString;
+        }
+        return metricsString;
+    }
 }

@@ -27,9 +27,29 @@ public class PlayerMetricSummary {
 	}
 	
 	public Long getMostRecentShift() {
-		Long mostRecentShift = 0l;
+		Long mostRecentShift = -1l;
 		for (PlayerMetric metric : metrics) {
 			if (metric.getShiftId() > mostRecentShift) {
+				mostRecentShift = metric.getShiftId();
+			}
+		}
+		return mostRecentShift;
+	}
+
+	public Long getMostRecentShift(PositionType positionType) {
+		Long mostRecentShift = 0l;
+		for (PlayerMetric metric : metrics) {
+			if (metric.getShiftId() > mostRecentShift && metric.getPosition().getPositionType() == positionType) {
+				mostRecentShift = metric.getShiftId();
+			}
+		}
+		return mostRecentShift;
+	}
+
+	public Long getMostRecentShift(Position position) {
+		Long mostRecentShift = 0l;
+		for (PlayerMetric metric : metrics) {
+			if (metric.getShiftId() > mostRecentShift && metric.getPosition() == position) {
 				mostRecentShift = metric.getShiftId();
 			}
 		}
@@ -57,9 +77,15 @@ public class PlayerMetricSummary {
 
 	@Override
 	public String toString() {
-		return "PlayerMetricSummary [player=" + player + ", metrics=" + metrics
+        String metricsString = "";
+        for (PlayerMetric metric : metrics) {
+            metricsString += " " + metric.toString();
+        }
+        return "PlayerMetricSummary [player=" + player + ", metrics=" + metricsString
 				+ ", positionsPlayed=" + positionsPlayed + "]";
 	}
-	
-	
+
+    public List<PlayerMetric> getMetrics() {
+        return metrics;
+    }
 }
