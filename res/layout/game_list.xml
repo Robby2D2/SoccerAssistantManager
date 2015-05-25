@@ -17,12 +17,12 @@
 <TextView android:id="@+id/game_list_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@color/background_3"
+	    android:background="@color/background_1"
 	    android:textColor="@color/default_text"
 	    android:text="@string/game_list"/>
 <ListView android:id="@+id/android:list"
     	android:layout_weight="1"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="0dip"/>
 <TextView android:id="@+id/android:empty"
        	android:layout_width="wrap_content"

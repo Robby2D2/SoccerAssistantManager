@@ -18,11 +18,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
@@ -51,6 +48,8 @@ public class GameList extends ListActivity {
     
     private Button startNewGameButton;
 
+    private int alternatingColorOne;
+    private int alternatingColorTwo;
 
     /** Called when the activity is first created. */
     @Override
@@ -62,6 +61,9 @@ public class GameList extends ListActivity {
         gameDao = new GameDao(dataHelper.getWritableDatabase());
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
         team = SoccerManager.getActiveTeam(this, teamDao);
+
+        alternatingColorOne = getResources().getColor(R.color.alternating_color_one);
+        alternatingColorTwo = getResources().getColor(R.color.alternating_color_two);
 
         startNewGameButton = (Button)findViewById(R.id.startNewGameButton);
 
@@ -95,7 +97,18 @@ public class GameList extends ListActivity {
 
         // Now create a simple cursor adapter and set it to display
         SimpleCursorAdapter gamesAdapter =
-        	    new SimpleCursorAdapter(this, R.layout.game_list_row, gameCursor, from, to);
+        	    new SimpleCursorAdapter(this, R.layout.game_list_row, gameCursor, from, to) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        if (position % 2 == 1) {
+                            view.setBackgroundColor(alternatingColorOne);
+                        } else {
+                            view.setBackgroundColor(alternatingColorTwo);
+                        }
+                        return view;
+                    }
+                };
 
         gamesAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 

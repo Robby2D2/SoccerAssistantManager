@@ -7,7 +7,7 @@
 <TextView android:id="@+id/play_game_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@color/background_3"
+	    android:background="@color/background_1"
 	    android:textColor="@color/default_text"/>
 <TextView android:id="@+id/android:empty"
        	android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
     	android:text="@string/no_players_found"/>
 <ListView android:id="@+id/android:list"
     	android:layout_weight="1"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="0dip"/>
 <Button android:layout_width="match_parent"
         android:layout_height="wrap_content"

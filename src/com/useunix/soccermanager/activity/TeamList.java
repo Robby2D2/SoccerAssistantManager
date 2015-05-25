@@ -44,6 +44,9 @@ public class TeamList extends ListActivity {
     private Button playerListButton;
     private Button gameListButton;
 
+    private int alternatingColorOne;
+    private int alternatingColorTwo;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,9 @@ public class TeamList extends ListActivity {
 
         dataHelper = new SoccerManagerDataHelper(this);
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
+
+        alternatingColorOne = getResources().getColor(R.color.alternating_color_one);
+        alternatingColorTwo = getResources().getColor(R.color.alternating_color_two);
 
         createNewTeamButton = (Button)findViewById(R.id.add_team_button);
         createNewTeamButton.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +145,17 @@ public class TeamList extends ListActivity {
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             return layoutInflater.inflate(R.layout.team_list_row, null);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            if (position % 2 == 1) {
+                view.setBackgroundColor(alternatingColorOne);
+            } else {
+                view.setBackgroundColor(alternatingColorTwo);
+            }
+            return view;
         }
     }
 

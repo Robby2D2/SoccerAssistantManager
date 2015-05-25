@@ -42,6 +42,8 @@ public class PlayGame extends ListActivity {
 	private Team team;
 	private Date gameDate;
     private List<Player> allGamePlayers;
+    private int alternatingColorOne;
+    private int alternatingColorTwo;
 
     /** Called when the activity is first created. */
     @Override
@@ -56,7 +58,10 @@ public class PlayGame extends ListActivity {
         headerText = (TextView) findViewById(R.id.play_game_header_text);
 		gameDate = new Date();
 		headerText.setText(getString(R.string.play_game_header, gameDate));
-        
+
+        alternatingColorOne = getResources().getColor(R.color.alternating_color_one);
+        alternatingColorTwo = getResources().getColor(R.color.alternating_color_two);
+
         seeFirstShiftButton = (Button) findViewById(R.id.seeFirstShift);
         final Intent gameShiftIntent = new Intent(this, GameShift.class);
         seeFirstShiftButton.setOnClickListener(new View.OnClickListener() {
@@ -158,5 +163,16 @@ public class PlayGame extends ListActivity {
 		public View newView(Context context, Cursor cursor, ViewGroup parent) {
 			return layoutInflater.inflate(R.layout.player_game_row, null);
 		}
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            if (position % 2 == 1) {
+                view.setBackgroundColor(alternatingColorOne);
+            } else {
+                view.setBackgroundColor(alternatingColorTwo);
+            }
+            return view;
+        }
 	}
 }

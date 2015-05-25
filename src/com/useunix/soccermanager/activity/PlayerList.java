@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
@@ -33,7 +30,9 @@ public class PlayerList extends ListActivity {
     
     private Button createNewPlayerButton;
     private Team team;
-    
+
+    private int alternatingColorOne;
+    private int alternatingColorTwo;
     
     /** Called when the activity is first created. */
     @Override
@@ -45,6 +44,9 @@ public class PlayerList extends ListActivity {
         playerDao = new PlayerDao(dataHelper.getWritableDatabase());
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
         team = SoccerManager.getActiveTeam(this, teamDao);
+
+        alternatingColorOne = getResources().getColor(R.color.alternating_color_one);
+        alternatingColorTwo = getResources().getColor(R.color.alternating_color_two);
 
         createNewPlayerButton = (Button)findViewById(R.id.add_player_button);
         createNewPlayerButton.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +78,18 @@ public class PlayerList extends ListActivity {
         
         // Now create a simple cursor adapter and set it to display
         SimpleCursorAdapter players = 
-        	    new SimpleCursorAdapter(this, R.layout.player_list_row, playerCursor, from, to);
+        	    new SimpleCursorAdapter(this, R.layout.player_list_row, playerCursor, from, to) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        if (position % 2 == 1) {
+                            view.setBackgroundColor(alternatingColorOne);
+                        } else {
+                            view.setBackgroundColor(alternatingColorTwo);
+                        }
+                        return view;
+                    }
+                };
         setListAdapter(players);
     }
     
