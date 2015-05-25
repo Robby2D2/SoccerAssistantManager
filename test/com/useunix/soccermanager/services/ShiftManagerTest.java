@@ -102,14 +102,18 @@ public class ShiftManagerTest {
                 PlayerMetricSummary playerOnBenchMetricSummary = playerStats.get(playerOnBench);
                 int benchPlayerShiftsPlayed = 0;
                 Long benchPlayerMostRecentShift = -1l;
+                Long benchPlayerShiftPlayingPriority = 0l;
                 if (playerOnBenchMetricSummary != null) {
                     benchPlayerShiftsPlayed = playerOnBenchMetricSummary.getTotalShiftsPlayed();
                     benchPlayerMostRecentShift = playerOnBenchMetricSummary.getMostRecentShift();
+                    benchPlayerShiftPlayingPriority = playerOnBenchMetricSummary.getShiftPlayingPriority();
                 }
                 assertTrue(benchPlayerShiftsPlayed >= playerInShiftMetricSummary.getTotalShiftsPlayed() - 1);
                 if (benchPlayerShiftsPlayed == playerInShiftMetricSummary.getTotalShiftsPlayed()) {
                     assertTrue(benchPlayerMostRecentShift >= getPreviousShiftPlayed(shiftId, playerInShiftMetricSummary));
                 }
+
+                assertTrue(benchPlayerShiftPlayingPriority >= (playerInShiftMetricSummary.getShiftPlayingPriority() - Math.pow(10, shiftId)));
             }
         }
 

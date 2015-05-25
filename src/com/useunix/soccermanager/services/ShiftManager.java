@@ -155,22 +155,6 @@ public class ShiftManager implements Parcelable {
 		return playersWhoHaveNotPlayedRecently;
 	}
 
-	private List<Player> determinePlayersWhoHavePlayedLeastRecently(List<Player> playersInShift) {
-		Long minMostRecentShift = Long.MAX_VALUE;
-		List<Player> playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
-		for (Player player : playersInShift) {
-			Long mostRecentShift = playerStats.get(player) == null ? 0l : playerStats.get(player).getMostRecentShift();
-			if (mostRecentShift == minMostRecentShift) {
-				playersWhoHaveNotPlayedRecently.add(player);
-			} else if (mostRecentShift < minMostRecentShift) {
-				minMostRecentShift = mostRecentShift;
-				playersWhoHaveNotPlayedRecently = new ArrayList<Player>();
-				playersWhoHaveNotPlayedRecently.add(player);
-			}
-		}
-		return playersWhoHaveNotPlayedRecently;
-	}
-
 	private List<Player> determinePlayersInNextShift() {
         String metricsString = metricsToString();
         System.out.println(metricsString);
@@ -179,66 +163,41 @@ public class ShiftManager implements Parcelable {
 		List<Player> playersOnBench = new ArrayList<Player>();
 		playersOnBench.addAll(allPlayers);
 
-		int count = 0;
-		while (playersInShift.size() != Position.values().length && count++ < 100) {
-			List<Player> whoIsUpNext = whoHasPlayedTheLeast(playersOnBench);
+        for (int count = 0; count < Position.values().length; count++) {
+            Player nextOneIn = null;
+            List<Player> tiedPlayersForNextOneIn = new ArrayList<Player>();
+            for (Player playerOnBench : playersOnBench) {
+                if (nextOneIn == null) {
+                    nextOneIn = playerOnBench;
+                    tiedPlayersForNextOneIn = new ArrayList<Player>();
+                    tiedPlayersForNextOneIn.add(playerOnBench);
+                } else {
+                    PlayerMetricSummary nextOneInSummary = playerStats.get(nextOneIn);
+                    PlayerMetricSummary playerOnBenchSummary = playerStats.get(playerOnBench);
+                    long playerOnBenchSummaryShiftPlayingPriority = 0l;
+                    if (playerOnBenchSummary != null) {
+                        playerOnBenchSummaryShiftPlayingPriority = playerOnBenchSummary.getShiftPlayingPriority();
+                    }
+                    long nextOneInSummaryShiftPlayingPriority = 0l;
+                    if (nextOneInSummary != null) {
+                        nextOneInSummaryShiftPlayingPriority = nextOneInSummary.getShiftPlayingPriority();
+                    }
+                    if (playerOnBenchSummaryShiftPlayingPriority < nextOneInSummaryShiftPlayingPriority) {
+                        tiedPlayersForNextOneIn = new ArrayList<Player>();
+                        tiedPlayersForNextOneIn.add(playerOnBench);
+                        nextOneIn = playerOnBench;
+                    } else if (playerOnBenchSummaryShiftPlayingPriority == nextOneInSummaryShiftPlayingPriority) {
+                        tiedPlayersForNextOneIn.add(playerOnBench);
+                    }
+                }
+            }
+            int randomIndex = secureRandom.nextInt(tiedPlayersForNextOneIn.size());
+            nextOneIn = tiedPlayersForNextOneIn.get(randomIndex);
+            playersOnBench.remove(nextOneIn);
+            playersInShift.add(nextOneIn);
+        }
 
-			// Need to find more players for the shift.
-			if ((whoIsUpNext.size() + playersInShift.size()) <= Position.values().length) {
-				playersOnBench.removeAll(whoIsUpNext);
-				playersInShift.addAll(whoIsUpNext);
-
-				// Found too many players
-			} else if ((whoIsUpNext.size() + playersInShift.size()) > Position.values().length) {
-				int numPlayersToAdd = Position.values().length - playersInShift.size();
-				if (numPlayersToAdd > whoIsUpNext.size()) {
-					numPlayersToAdd = whoIsUpNext.size();
-				}
-
-				// Determine who was in most recently
-                // TODO Need unit tests around this - doesn't seem right as second pass may add several players that
-                // have played more recently the winner is then randomly chosen.
-				List<Player> leastActivePlayers = determinePlayersWhoHavePlayedLeastRecently(whoIsUpNext);
-				while (leastActivePlayers.size() < numPlayersToAdd && count++ < 100) {
-					whoIsUpNext.removeAll(leastActivePlayers);
-					leastActivePlayers.addAll(determinePlayersWhoHavePlayedLeastRecently(whoIsUpNext));
-				}
-
-				for (int i = 0; i < numPlayersToAdd; i++) {
-					int randomIndex = secureRandom.nextInt(leastActivePlayers.size());
-					Player player = leastActivePlayers.get(randomIndex);
-					leastActivePlayers.remove(player);
-					playersOnBench.remove(player);
-					playersInShift.add(player);
-				}
-			}
-		}
 		return playersInShift;
-	}
-
-	private List<Player> whoHasPlayedTheLeast(List<Player> players) {
-		List<Player> whoIsUpNext = new ArrayList<Player>();
-		int minShiftsPlayed = Integer.MAX_VALUE;
-
-		// Find the players who have played the least and make sure they are
-		// assigned a position.
-		for (Player player : players) {
-			PlayerMetricSummary summary = playerStats.get(player);
-
-			if (summary == null) {
-				summary = new PlayerMetricSummary();
-			}
-
-			int totalShiftsPlayed = summary.getTotalShiftsPlayed();
-			if (totalShiftsPlayed == minShiftsPlayed) {
-				whoIsUpNext.add(player);
-			} else if (totalShiftsPlayed < minShiftsPlayed) {
-				minShiftsPlayed = totalShiftsPlayed;
-				whoIsUpNext = new ArrayList<Player>();
-				whoIsUpNext.add(player);
-			}
-		}
-		return whoIsUpNext;
 	}
 
 	public List<Player> getAllPlayers() {

@@ -75,6 +75,14 @@ public class PlayerMetricSummary {
 		return timesAtPositionType;
 	}
 
+    public long getShiftPlayingPriority() {
+        long priority = 0l;
+        for (PlayerMetric metric : metrics) {
+            priority += Math.pow(10, metric.getShiftId());
+        }
+        return priority;
+    }
+
 	@Override
 	public String toString() {
         String metricsString = "";
