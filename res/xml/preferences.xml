@@ -19,13 +19,15 @@
 			android:inputType="number"
 			android:maxLines="1"
 			android:maxLength="10" />
-		<EditTextPreference
-				android:key="@string/team_name_key"
-				android:title="@string/team_name"
-				android:defaultValue="@string/team_name_default"
-				android:inputType="text"
-				android:maxLines="1"
-				android:maxLength="30" />
+		<!--<EditTextPreference-->
+                <!--android:enabled="false"-->
+                <!--android:selectable="false"-->
+				<!--android:key="@string/team_name_key"-->
+				<!--android:title="@string/team_name"-->
+				<!--android:defaultValue="@string/team_name_default"-->
+				<!--android:inputType="text"-->
+				<!--android:maxLines="1"-->
+				<!--android:maxLength="30" />-->
 	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -34,7 +34,7 @@ public class PlayerEdit extends Activity {
         String teamName = sharedPreferences.getString(teamNameKey, "Growl");
         team = teamDao.findTeamByName(teamName);
 
-        setContentView(R.layout.player_edit);
+        SoccerManager.setContentView(this, R.layout.player_edit);
         
        
         firstNameText = (EditText) findViewById(R.id.first_name);

@@ -49,7 +49,7 @@ public class PlayGame extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.play_game);
+        SoccerManager.setContentView(this, R.layout.play_game);
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String teamNameKey = getString(R.string.team_name_key);

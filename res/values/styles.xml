@@ -10,10 +10,7 @@
   -->
 
 <resources>
-    <color name="background_1">#444444</color>
-    <color name="default_text">#FFFFFF</color>
-    <color name="background_2">#777777</color>
-    <color name="background_title">#777777</color>
-    <color name="alternating_color_one">#222222</color>
-    <color name="alternating_color_two">#111111</color>
+    <style name="WindowTitleBackground">
+        <item name="android:background">@color/background_title</item>
+    </style>
 </resources>

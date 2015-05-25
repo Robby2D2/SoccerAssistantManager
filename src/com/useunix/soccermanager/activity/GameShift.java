@@ -65,7 +65,7 @@ public class GameShift extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_shift);
+        SoccerManager.setContentView(this, R.layout.game_shift);
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         

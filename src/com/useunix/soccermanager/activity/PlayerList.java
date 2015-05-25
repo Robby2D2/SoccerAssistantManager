@@ -38,7 +38,7 @@ public class PlayerList extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.player_list);
+        SoccerManager.setContentView(this, R.layout.player_list);
         
         dataHelper = new SoccerManagerDataHelper(this);
         playerDao = new PlayerDao(dataHelper.getWritableDatabase());

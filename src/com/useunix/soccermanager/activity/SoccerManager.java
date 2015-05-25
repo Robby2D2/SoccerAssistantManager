@@ -28,6 +28,7 @@ import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import com.useunix.soccermanager.R;
@@ -58,7 +59,10 @@ public class SoccerManager extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        int layout = R.layout.main;
+        Activity activity = this;
+
+        setContentView(activity, layout);
 
         teamListButton = (Button) findViewById(R.id.team_list_button);
         final Intent teamListIntent = new Intent(this, TeamList.class);
@@ -82,7 +86,10 @@ public class SoccerManager extends Activity {
         Team team = SoccerManager.getActiveTeam(this, teamDao);
         resumeGameButton = (Button) findViewById(R.id.resume_game_button);
         final Intent resumeGameIntent = new Intent(this, GameShift.class);
-        Game mostRecentGame = gameDao.findMostRecentGame(team.getId());
+        Game mostRecentGame = null;
+        try {
+            gameDao.findMostRecentGame(team.getId());
+        } catch (Exception ignore) { }
         if (mostRecentGame != null) {
             resumeGameIntent.putExtra("GAME_ID", mostRecentGame.getId());
         }
@@ -98,6 +105,12 @@ public class SoccerManager extends Activity {
         		showPreferences();
         	}
         });
+    }
+
+    public static void setContentView(Activity activity, int layout) {
+        activity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        activity.setContentView(layout);
+        activity.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
     }
 
     @Override
@@ -118,7 +131,9 @@ public class SoccerManager extends Activity {
 
     public static void updateTitle(Activity activity) {
         String teamName = getActiveTeamName(activity);
-        activity.setTitle("Soccer Manager for Team " + teamName);
+//        activity.setTitle("Soccer Manager for Team " + teamName);
+        TextView titleView = (TextView)activity.findViewById(R.id.title);
+        titleView.setText("Assistant Manager for " + teamName);
     }
 
     public void showPreferences() {

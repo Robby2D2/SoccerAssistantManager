@@ -51,7 +51,7 @@ public class TeamList extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.team_list);
+        SoccerManager.setContentView(this, R.layout.team_list);
 
         dataHelper = new SoccerManagerDataHelper(this);
         teamDao = new TeamDao(dataHelper.getWritableDatabase());

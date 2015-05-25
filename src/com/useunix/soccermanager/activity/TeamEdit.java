@@ -38,7 +38,7 @@ public class TeamEdit extends Activity {
         soccerManagerDataHelper = new SoccerManagerDataHelper(this);
         teamDao = new TeamDao(soccerManagerDataHelper.getWritableDatabase());
 
-        setContentView(R.layout.team_edit);
+        SoccerManager.setContentView(this, R.layout.team_edit);
         
         teamNameText = (EditText) findViewById(R.id.team_name);
 
