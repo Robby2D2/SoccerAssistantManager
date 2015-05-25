@@ -7,14 +7,14 @@
 
 <LinearLayout android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:background="#444444"
+            android:background="@color/background_1"
             android:layout_height="wrap_content">
 
         <TextView android:id="@+id/play_game_header_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="#FFFFFF"/>
+                android:textColor="@color/default_text"/>
 
     <LinearLayout
             android:layout_width="fill_parent"
@@ -22,8 +22,8 @@
             android:orientation="vertical" android:layout_marginTop="5dp">
         <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setAsCurrentShiftButton"
-                android:text="@string/shift_set_current_text"
+                android:id="@+id/back_to_list_of_attending_players_button"
+                android:text="@string/back_to_list_of_attending_players"
                 android:layout_gravity="center_vertical|right"
                 android:padding="6dp"/>
     </LinearLayout>
@@ -31,7 +31,7 @@
 <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#777777" android:paddingTop="5dp">
+        android:background="@color/background_2" android:paddingTop="5dp">
 
 	<Button android:id="@+id/startShiftTimerButton"
 		android:text="@string/startShiftTimerButtonText"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="35sp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/default_text"
                 android:id="@+id/countDown"
                 android:layout_gravity="right"/>
     </LinearLayout>
@@ -70,7 +70,7 @@
 
     <LinearLayout
     android:orientation="vertical"
-    android:background="#777777"
+    android:background="@color/background_2"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" android:paddingTop="5dp">
 

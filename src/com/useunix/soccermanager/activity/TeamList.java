@@ -33,8 +33,6 @@ public class TeamList extends ListActivity {
 
 	private SoccerManagerDataHelper dataHelper;
     private TeamDao teamDao;
-    private GameDao gameDao;
-    private String teamName;
     private ListView mainListView;
     private static final int CREATE_TEAM_MENU_ID = Menu.FIRST;
     private static final int ACTIVITY_CREATE_TEAM = 1;
@@ -51,12 +49,8 @@ public class TeamList extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.team_list);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String teamNameKey = getString(R.string.team_name_key);
-        teamName = sharedPreferences.getString(teamNameKey, "Growl");
 
         dataHelper = new SoccerManagerDataHelper(this);
-        gameDao = new GameDao(dataHelper.getWritableDatabase());
         teamDao = new TeamDao(dataHelper.getWritableDatabase());
 
         createNewTeamButton = (Button)findViewById(R.id.add_team_button);
@@ -94,14 +88,16 @@ public class TeamList extends ListActivity {
 
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         fillData();
-
+        SoccerManager.updateTitle(this);
         for (int count = 0; count < mainListView.getCount(); count++) {
             Cursor teamCursor = (Cursor)mainListView.getItemAtPosition(count);
             Team team = teamDao.getTeam(teamCursor);
+            String teamName = SoccerManager.getActiveTeam(this, teamDao).getName();
             if (teamName.equals(team.getName())) {
                 mainListView.setItemChecked(count, true);
             }
@@ -167,9 +163,8 @@ public class TeamList extends ListActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(teamNameKey, team.getName());
         editor.commit();
-//        Intent i = new Intent(this, PlayGame.class);
-//        i.putExtra("GAME_ID", id);
-//        startActivityForResult(i, ACTIVITY_PLAY_GAME);
+
+        SoccerManager.updateTitle(this);
     }
 
 }

@@ -17,8 +17,8 @@
 <TextView android:id="@+id/team_list_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="#666666"
-	    android:textColor="#FFFFFF"
+	    android:background="@color/background_3"
+	    android:textColor="@color/default_text"
 	    android:text="@string/team_list"/>
 <ListView android:id="@+id/android:list"
     	android:layout_weight="1"
@@ -32,7 +32,7 @@
 
     <LinearLayout
             android:orientation="horizontal"
-            android:background="#777777"
+            android:background="@color/background_2"
             android:paddingTop="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">

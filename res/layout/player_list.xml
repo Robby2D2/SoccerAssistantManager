@@ -7,8 +7,8 @@
 <TextView android:id="@+id/player_list_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="#666666"
-	    android:textColor="#FFFFFF"
+	    android:background="@color/background_3"
+	    android:textColor="@color/default_text"
 	    android:text="@string/player_list"/>
 <ListView android:id="@+id/android:list"
     	android:layout_weight="1"

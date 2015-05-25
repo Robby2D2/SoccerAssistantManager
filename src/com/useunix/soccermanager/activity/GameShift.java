@@ -8,7 +8,6 @@ import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -47,9 +46,9 @@ public class GameShift extends Activity {
 	private Button previousButton;
 	private Button startButton;
 	private Button stopShiftButton;
-	private Button setAsCurrentShiftButton;
+	private Button backToAttendingPlayersButton
+            ;
 	private CountDownTimer countDownTimer;
-	private Long currentShift;
 	private Long currentlyViewingShift;
 	private ShiftManager shiftManager;
 	
@@ -58,6 +57,8 @@ public class GameShift extends Activity {
 	private Game game;
 	private AlarmManager alarmManager;
     private PendingIntent alarmIntent;
+    private int alternatingColorOne;
+    private int alternatingColorTwo;
 
 
     /** Called when the activity is first created. */
@@ -82,18 +83,21 @@ public class GameShift extends Activity {
         String shiftLengthKey = getString(R.string.shift_length_key);
 		String shiftLengthValue = sharedPreferences.getString(shiftLengthKey,  String.valueOf(DEFAULT_SHIFT_LENGTH));
 		shiftLength = Integer.valueOf(shiftLengthValue);
-        
+
+        alternatingColorOne = getResources().getColor(R.color.alternating_color_one);
+        alternatingColorTwo = getResources().getColor(R.color.alternating_color_two);
+
+        loadFromExistingGame(getIntent().getExtras().getLong("GAME_ID"));
+
         initCurrentButton();
         initNextButton();
         initPreviousButton();
         initStartButton();
         initStopShiftButton();
-		initSetAsCurrentShiftButton();
+		initBackToAttendingPlayersButton();
 
         attendingPlayerListView = (ListView)findViewById(R.id.attendingPlayers);
 
-		loadFromExistingGame(getIntent().getExtras().getLong("GAME_ID"));
-		
         if (game.getCurrentShiftId() == null) {
         	game.setCurrentShiftId(0l);
         }
@@ -219,12 +223,18 @@ public class GameShift extends Activity {
 		});
 	}
 
-	private void initSetAsCurrentShiftButton() {
-		setAsCurrentShiftButton = (Button) findViewById(R.id.setAsCurrentShiftButton);
-		setAsCurrentShiftButton.setOnClickListener(new View.OnClickListener() {
+	private void initBackToAttendingPlayersButton() {
+        final boolean finishOnBack = getIntent().getExtras().getBoolean("finishOnBack", false);
+		backToAttendingPlayersButton = (Button) findViewById(R.id.back_to_list_of_attending_players_button);
+        final Intent playGameIntent = new Intent(this, PlayGame.class);
+        playGameIntent.putExtra("GAME_ID", game.getId());
+        backToAttendingPlayersButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                stopCurrentTimer();
-                setCurrentShift(currentlyViewingShift);
+                if (finishOnBack) {
+                    finish();
+                } else {
+                    startActivityForResult(playGameIntent, 1);
+                }
             }
         });
 	}
@@ -277,9 +287,9 @@ public class GameShift extends Activity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 if (position % 2 == 1) {
-                    view.setBackgroundColor(0xFF111111);
+                    view.setBackgroundColor(alternatingColorOne);
                 } else {
-                    view.setBackgroundColor(0xFF222222);
+                    view.setBackgroundColor(alternatingColorTwo);
                 }
                 return view;
             }

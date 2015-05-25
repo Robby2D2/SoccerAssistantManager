@@ -7,8 +7,8 @@
 <TextView android:id="@+id/play_game_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="#666666"
-	    android:textColor="#FFFFFF"/>
+	    android:background="@color/background_3"
+	    android:textColor="@color/default_text"/>
 <TextView android:id="@+id/android:empty"
        	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"

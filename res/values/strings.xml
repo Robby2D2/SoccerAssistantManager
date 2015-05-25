@@ -39,6 +39,6 @@
     <string name="team_name_default">Growl</string>
     <string name="delete_team">Delete this team</string>
     <string name="resume_game">Resume most recent game</string>
-
+    <string name="back_to_list_of_attending_players">Back</string>
 
 </resources>

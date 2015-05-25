@@ -17,8 +17,8 @@
 <TextView android:id="@+id/game_list_header_text"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:background="#666666"
-	    android:textColor="#FFFFFF"
+	    android:background="@color/background_3"
+	    android:textColor="@color/default_text"
 	    android:text="@string/game_list"/>
 <ListView android:id="@+id/android:list"
     	android:layout_weight="1"

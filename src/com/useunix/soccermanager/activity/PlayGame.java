@@ -64,6 +64,7 @@ public class PlayGame extends ListActivity {
 				Game game = createGameAndAssignPlayers();
 				Log.d(TAG, "Starting new game, going to first shift.");
 				gameShiftIntent.putExtra("GAME_ID", game.getId());
+				gameShiftIntent.putExtra("finishOnBack", true);
 				startActivityForResult(gameShiftIntent, 2);
 			}
 		});
